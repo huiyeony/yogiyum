@@ -18,22 +18,21 @@ export default function RestaurantCard({ restaurant }: Props) {
 
       {/* 카드 메인 부분 */}
       <div className="flex-1 flex flex-col gap-4">
-        <div className="flex flex-row gap-2 items-center justify-start">
-          <h2 className="text-2xl font-bold">{restaurant.name}</h2>
-
-          <RestaurantCategoryBadge category={restaurant.category} />
+        <div className="flex flex-row justify-between items-center gap-2">
+          <h2 className="flex-1 text-2xl font-bold">{restaurant.name}</h2>
         </div>
 
-        <div className="flex flex-col gap-4">
-          {/* 별점 부분 */}
-          <RatingStar rating={3.8} digit={1} />
-        </div>
+        {/* 별점 부분 */}
+        <RatingStar rating={3.8} digit={1} />
+
+        {/* 카테고리 배지 부분 */}
+        <RestaurantCategoryBadge category={restaurant.category} />
       </div>
 
       {/* 찜하기 버튼 부분 */}
-      <div>
+      <div className="flex flex-col items-center">
         <Heart fill="#ef4444" strokeWidth={0} size={40} />
-        <span>124</span>
+        <span className="text-sm text-neutral-500">124</span>
       </div>
     </Card>
   );

@@ -26,7 +26,7 @@ export default function RestaurantCategoryBadge({ category }: Props) {
   const selected = CATEGORY_BADGE_UI[category];
 
   return (
-    <span className="rounded-md w-fit px-2 py-0.5 text-sm font-medium bg-accent-foreground text-accent">
+    <span className="rounded-md w-fit px-2 py-0.5 text-xs font-medium bg-accent-foreground text-accent">
       {selected.label}
     </span>
   );
