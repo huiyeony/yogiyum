@@ -1,4 +1,4 @@
-export interface Comment {
+export interface Review {
   /// 식당 ID
   restaurantID: number;
 
