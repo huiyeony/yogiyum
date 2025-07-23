@@ -10,6 +10,9 @@ export interface Restaurant {
   /// 위도
   latitude: number;
 
+  /// (도로명) 주소
+  address: number;
+
   /// 경도
   longitude: number;
 
