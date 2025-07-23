@@ -1,36 +1,32 @@
-import { Heart, Star } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Card } from "./ui/card";
-import { Badge } from "./ui/badge";
+import type { Restaurant } from "@/entities/restaurant";
+import RestaurantCategoryBadge from "./RestaurantCategoryBadge";
+import RatingStar from "./RatingStar";
 
-export default function RestaurantCard() {
+interface Props {
+  readonly restaurant: Restaurant;
+}
+
+export default function RestaurantCard({ restaurant }: Props) {
   return (
     <Card className="flex flex-row justify-between p-4">
       {/* 이미지 부분 */}
       <div className="h-40 aspect-square">
-        <img src="https://picsum.photos/160" className="rounded-sm" />
+        <img src={restaurant.thumbnailUrl.toString()} className="rounded-sm" />
       </div>
 
       {/* 카드 메인 부분 */}
       <div className="flex-1 flex flex-col gap-4">
         <div className="flex flex-row gap-2 items-center justify-start">
-          <h2 className="text-2xl font-bold">식당 이름</h2>
+          <h2 className="text-2xl font-bold">{restaurant.name}</h2>
 
-          <Badge>양식</Badge>
-
-          <Badge variant="destructive">인기</Badge>
+          <RestaurantCategoryBadge category={restaurant.category} />
         </div>
 
         <div className="flex flex-col gap-4">
           {/* 별점 부분 */}
-          <div className="flex flex-row items-center gap-1">
-            <Star size="20" />
-            <Star size="20" />
-            <Star size="20" />
-            <Star size="20" />
-            <Star size="20" />
-
-            <span className="text-neutral-500">4.5</span>
-          </div>
+          <RatingStar rating={3.8} digit={1} />
         </div>
       </div>
 

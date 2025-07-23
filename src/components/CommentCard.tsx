@@ -1,23 +1,23 @@
-import { PencilIcon, Star, Trash2Icon } from "lucide-react";
+import { PencilIcon, Trash2Icon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+import type { Comment } from "@/entities/comment";
+import RatingStar from "./RatingStar";
 
-export default function CommentCard() {
+interface Props {
+  comment: Comment;
+}
+
+export default function CommentCard({ comment }: Props) {
   return (
     <Card className="flex flex-col gap-4 bg-white rounded-md text-black p-4">
       <header className="flex flex-row justify-between items-center">
         <div className="flex flex-row gap-8 items-center">
           {/* 닉네임부분 */}
-          <span className="text-lg font-bold">닉네임</span>
+          <span className="text-lg font-bold">{comment.userId}</span>
 
           {/* 별점부분 */}
-          <div className="flex flex-row gap-1">
-            <Star size={20} />
-            <Star size={20} />
-            <Star size={20} />
-            <Star size={20} />
-            <Star size={20} />
-          </div>
+          <RatingStar rating={comment.rating} digit={0} />
         </div>
 
         <div className="flex flex-row gap-2">
@@ -31,11 +31,7 @@ export default function CommentCard() {
         </div>
       </header>
 
-      <div className="w-full text-start">
-        Ipsam dolorem ut tempora sunt perferendis consectetur molestiae neque.
-        Sint non ea accusantium quos tenetur sint. Omnis aspernatur omnis
-        architecto nulla.
-      </div>
+      <div className="w-full text-start">{comment.comment}</div>
     </Card>
   );
 }
