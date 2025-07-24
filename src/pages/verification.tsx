@@ -1,34 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { emojiList } from "@/constants/emojiList";
+import { useAuth } from "@/contexts/AuthContext";
 
 const VerificationPage = () => {
   const [nickname, setNickname] = useState("");
-
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
+  // 인증 후 새 창에서 들어왔을 경우, 유저 정보를 다시 context에 채움
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data.user) {
+        setUser(data.user);
+      } else {
+        alert("이메일 인증 후 다시 로그인해주세요.");
+      }
+    };
+
+    checkUser();
+  }, []);
+
   const handleSubmit = async () => {
-    // 1. 로그인된 유저 정보 가져오기
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (!user || userError) {
+    if (!user) {
       alert("로그인 정보가 없습니다.");
-
       return;
     }
-    let error = null;
 
-    const res = await supabase
-      .from("profiles")
-      .insert({ id: user.id, nickname });
-
-    error = res.error;
+    const { error } = await supabase.from("users").insert({
+      user_internal_id: user.id,
+      nickname,
+    });
 
     if (error) {
       console.error("DB 삽입 실패:", error.message);
@@ -39,21 +45,16 @@ const VerificationPage = () => {
     navigate("/temp");
   };
 
-  //이모지 바꾸기
   const [emojiIndex, setEmojiIndex] = useState<number>(0);
   const handleClickEmoji = () => {
-    if (emojiIndex + 1 === emojiList.length) {
-      setEmojiIndex(0);
-    } else {
-      setEmojiIndex(emojiIndex + 1);
-    }
+    setEmojiIndex((prev) => (prev + 1) % emojiList.length);
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
       <div className="mb-8 text-center space-y-2">
         <button
-          className="inline-block animate-bounce text-4xl "
+          className="inline-block animate-bounce text-4xl"
           onClick={handleClickEmoji}
         >
           {emojiList[emojiIndex]}
@@ -75,7 +76,7 @@ const VerificationPage = () => {
           />
           <Button
             type="submit"
-            className=" font-gowun w-1/4"
+            className="font-gowun w-1/4 bg-red-400 hover:bg-red-600 transition-colors duration-200"
             onClick={handleSubmit}
           >
             등록
