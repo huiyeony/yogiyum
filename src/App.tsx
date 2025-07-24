@@ -1,3 +1,4 @@
+
 import { Route, Routes, Navigate } from "react-router-dom";
 import LoginPage from "./pages/login";
 import SignUpPage from "./pages/signup";
@@ -15,5 +16,6 @@ const App = () => {
     </Routes>
   );
 };
+
 
 export default App;
