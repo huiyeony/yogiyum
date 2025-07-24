@@ -32,29 +32,20 @@ export default function EditProfile() {
   };
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm('정말 탈퇴 하시겠습니까?');
-    if (!confirmDelete) return;
+    const confirmDelete = window.confirm('정말 탈퇴하시겠습니까?');
+    if (!confirmDelete || !userId) return;
 
-    const { data: user } = await supabase
-      .from('users')
-      .select('id')
-      .eq('nickname', oldNickname)
-      .single();
-
-    if (!user) {
-      alert('유저를 찾을 수 없습니다.');
-      return;
-    }
-
-    const { error } = await supabase.from('users').delete().eq('id', user.id);
+    const { error } = await supabase.from('users').delete().eq('id', userId); // ← userId는 현재 로그인된 유저 ID여야 함
 
     if (error) {
       alert('탈퇴 실패: ' + error.message);
       return;
     }
 
+    // 로컬 정보 제거 & 홈 이동
     localStorage.removeItem('nickname');
-    alert('회원탈퇴 완료');
+    localStorage.removeItem('user_id');
+    alert('회원탈퇴 완료!');
     navigate('/');
   };
   return (
