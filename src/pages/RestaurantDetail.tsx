@@ -29,7 +29,7 @@ export default function RestaurantDetailPage() {
         setRestaurant({
           id: data.uid,
           name: data.place_name,
-          thumbnailUrl: new URL(""),
+          thumbnailUrl: new URL("https://picsum.photos/500"),
 
           latitude: data.x,
           longitude: data.y,
@@ -38,7 +38,7 @@ export default function RestaurantDetailPage() {
           telephone: data.phone,
 
           openingHour: "",
-          category: RestaurantCategory.Korean,
+          category: data.category,
         });
       });
   };
