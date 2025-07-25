@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Heart } from "lucide-react";
 import { Card } from "./ui/card";
 import type { Restaurant } from "@/entities/restaurant";
@@ -21,11 +22,10 @@ export default function RestaurantCard({
   isLiked,
   onSearch,
 }: Props) {
-  // const [liked, setLiked] = useState<boolean>(isLiked);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const likedButtonClick = () => {
     if (isLiked) {
-      // 찜하기 취소
       supabase
         .from("liked")
         .delete()
@@ -33,50 +33,56 @@ export default function RestaurantCard({
         .then((res) => {
           if (res.status <= 200 || res.status > 300) return;
           onSearch();
-          // setLiked(!liked);
         });
     } else {
-      // 찜하기
       supabase
         .from("liked")
         .insert({ restaurant_id: restaurant.id })
         .then((res) => {
           if (res.status <= 200 || res.status > 300) return;
           onSearch();
-          // setLiked(!liked);
         });
     }
   };
 
   return (
-    <Card className="flex flex-row justify-between p-4">
+    <Card className="flex flex-row justify-between p-4 transition-opacity duration-500">
       {/* 이미지 부분 */}
-      <div className="h-30 aspect-square">
-        <img src={restaurant.thumbnailUrl.toString()} className="rounded-sm" />
+      <div className="h-30 aspect-square relative rounded-sm overflow-hidden bg-gray-100">
+        {/* 로딩 중인 gif */}
+        {!imageLoaded && (
+          <img
+            src="/loading.gif"
+            alt="로딩 중"
+            className="absolute inset-0 w-full h-full object-contain opacity-70"
+          />
+        )}
+
+        {/* 실제 썸네일 이미지 */}
+        <img
+          src={restaurant.thumbnailUrl.toString()}
+          alt={restaurant.name}
+          onLoad={() => setImageLoaded(true)}
+          onError={() => setImageLoaded(true)}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
+            imageLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
       </div>
 
-      {/* 카드 메인 부분 */}
-      <div className="flex-1 flex flex-col gap-4">
-        <div className="flex flex-row justify-between items-center gap-2">
-          {/* <Link to={`/restaurant/${restaurant.id}`}>
-            <h2 className="flex-1 text-2xl font-bold">{restaurant.name}</h2>
-          </Link> */}
-          <Link to={`/restaurant/${restaurant.id}`}>
-            <h2 className="flex-1 text-xl font-semibold hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
-              {restaurant.name}
-            </h2>
-          </Link>
-        </div>
-
-        {/* 별점 부분 */}
+      {/* 정보 영역 */}
+      <div className="flex-1 flex flex-col gap-4 px-4">
+        <Link to={`/restaurant/${restaurant.id}`}>
+          <h2 className="text-xl font-semibold hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
+            {restaurant.name}
+          </h2>
+        </Link>
         <RatingStar rating={rating} digit={1} />
-
-        {/* 카테고리 배지 부분 */}
         <RestaurantCategoryBadge category={restaurant.category} />
       </div>
 
-      {/* 찜하기 버튼 부분 */}
-      <div className="flex flex-col items-center">
+      {/* 찜 버튼 */}
+      <div className="flex flex-col items-center justify-start">
         <Heart
           className="cursor-pointer"
           fill={isLiked ? "#ef4444" : "gray"}
@@ -84,7 +90,6 @@ export default function RestaurantCard({
           size={40}
           onClick={likedButtonClick}
         />
-
         <span className="text-sm text-neutral-500">{likedCount}</span>
       </div>
     </Card>
