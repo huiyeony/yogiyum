@@ -15,15 +15,15 @@ const LoginPage = () => {
     setEmojiIndex((prev) => (prev + 1) % emojiList.length);
   };
 
-  //이 페이지 킬때 강제 로그아웃
-  useEffect(() => {
-    const forceLogout = async () => {
-      await supabase.auth.signOut(); // 세션 초기화
-      setUser(null); // context에서도 초기화
-      setLoading(false);
-    };
-    forceLogout();
-  }, [setLoading, setUser]);
+  // //이 페이지 킬때 강제 로그아웃
+  // useEffect(() => {
+  //   const forceLogout = async () => {
+  //     await supabase.auth.signOut(); // 세션 초기화
+  //     setUser(null); // context에서도 초기화
+  //     setLoading(false);
+  //   };
+  //   forceLogout();
+  // }, [setLoading, setUser]);
 
   //로그인 입력 처리
   const handleLogin = async (email: string, password: string) => {
@@ -63,8 +63,14 @@ const LoginPage = () => {
           >
             {emojiList[emojiIndex]}
           </button>
-          <h1 className="text-3xl font-jua text-foreground">요기얌</h1>
-          <p className="text-sm text-muted-foreground font-jua">
+
+          <Link to="/">
+            <h1 className="text-3xl font-jua text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
+              요기얌
+            </h1>
+          </Link>
+
+          <p className="text-sm text-muted-foreground pt-4 ">
             당신 주변의 숨은 맛집을 찾아보세요
           </p>
         </div>
@@ -75,18 +81,11 @@ const LoginPage = () => {
           처음이신가요? ➡️{" "}
           <Link
             to="/signup"
-            className="text-primary underline-offset-4 hover:underline hover:text-red-500 font-medium font-jua"
+            className="text-primary underline-offset-4 hover:underline hover:text-red-500 font-medium "
           >
             회원가입하러 가기
           </Link>
         </p>
-
-        <Link
-          to="/verification"
-          className="text-primary underline-offset-4 hover:underline hover:text-red-500 font-medium font-jua"
-        >
-          임시페이지 이동 (확인용)
-        </Link>
       </div>
     </Fade>
   );

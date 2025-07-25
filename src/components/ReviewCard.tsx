@@ -6,15 +6,17 @@ import RatingStar from "./RatingStar";
 
 interface Props {
   review: Review;
+
+  title: string;
 }
 
-export default function ReviewCard({ review }: Props) {
+export default function ReviewCard({ review, title }: Props) {
   return (
     <Card className="flex flex-col gap-4 bg-white rounded-md text-black p-4">
       <header className="flex flex-row justify-between items-center">
         <div className="flex flex-row gap-8 items-center">
           {/* 닉네임부분 */}
-          <span className="text-lg font-bold">{review.userId}</span>
+          <span className="text-lg font-bold">{title}</span>
 
           {/* 별점부분 */}
           <RatingStar rating={review.rating} digit={0} />

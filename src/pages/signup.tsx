@@ -65,8 +65,12 @@ const SignUpPage = () => {
           >
             {emojiList[emojiIndex]}
           </button>
-          <h1 className="text-3xl font-jua text-foreground">요기얌</h1>
-          <p className="text-sm text-muted-foreground font-jua">
+          <Link to="/">
+            <h1 className="text-3xl font-jua text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
+              요기얌
+            </h1>
+          </Link>
+          <p className="text-sm text-muted-foreground pt-4">
             맛집 리뷰를 남기고 공유해보세요
           </p>
         </div>

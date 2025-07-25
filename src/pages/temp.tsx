@@ -82,9 +82,11 @@ const TempPage = () => {
         >
           {emojiList[emojiIndex]}
         </button>
-        <h1 className="text-4xl font-gowun font-bold text-foreground">
-          요기얌
-        </h1>
+        <Link to="/">
+          <h1 className="text-3xl font-jua text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
+            요기얌
+          </h1>
+        </Link>
 
         <div>{message}</div>
 
