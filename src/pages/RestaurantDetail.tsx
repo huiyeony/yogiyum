@@ -2,7 +2,7 @@ import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import ReviewCard from "@/components/ReviewCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
+import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
 import type { Review } from "@/entities/review";
@@ -32,7 +32,6 @@ export default function RestaurantDetailPage() {
       rating: reviewRating,
       content: reviewContent,
       restaurant_id: restaurant?.id,
-      user_id: 21,
     });
 
     if (error) {
