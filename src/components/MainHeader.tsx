@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import supabase from "@/lib/supabase";
+import { ShoppingBagIcon } from "lucide-react";
 
 export default function MainHeader() {
   return (
@@ -17,7 +18,12 @@ export default function MainHeader() {
         <h1 className="text-xl font-bold">요기얌</h1>
       </Link>
 
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-6">
+        {/* 찜하기 버튼 */}
+        <Link to="">
+          <ShoppingBagIcon />
+        </Link>
+
         <UserButton />
       </div>
     </header>
@@ -45,7 +51,7 @@ function UserButton() {
           .single();
       })
       .then(({ data }) => {
-        if (data) {
+        if (!data) {
           return;
         }
 
