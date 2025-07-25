@@ -1,4 +1,5 @@
 export interface Review {
+  id: number;
   /// 식당 ID
   restaurantID: number;
 
@@ -9,7 +10,7 @@ export interface Review {
   createdAt: Date;
 
   /// 댓글 내용
-  comment: string;
+  content: string;
 
   /// 별점
   rating: number;
