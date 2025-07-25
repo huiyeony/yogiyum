@@ -16,7 +16,7 @@ const banners = [
   {
     text: "이벤트 참여하고 식사권 받아가세요!",
     image: "/banner3.png",
-    bgColor: "bg-red-200",
+    bgColor: "bg-yellow-200",
   },
 ];
 
