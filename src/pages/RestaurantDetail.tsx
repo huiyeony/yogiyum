@@ -7,11 +7,16 @@ import type { Review } from "@/entities/review";
 import supabase from "@/lib/supabase";
 import { SendIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-export default function RestaurantDetail() {
-  const id = "8";
+interface ReviewWithNickname extends Review {
+  nickname: string;
+}
+
+export default function RestaurantDetailPage() {
+  const { id } = useParams();
   const [restaurant, setRestaurant] = useState<Restaurant>();
-  const [reviews, setReviews] = useState<Review[]>();
+  const [reviews, setReviews] = useState<ReviewWithNickname[]>();
 
   const getRestaurantInfo = () => {
     supabase
@@ -20,10 +25,11 @@ export default function RestaurantDetail() {
       .eq("uid", id)
       .single()
       .then(({ data }) => {
+        console.log(data);
         setRestaurant({
           id: data.uid,
           name: data.place_name,
-          thumbnailUrl: new URL("https://picsum.photos/500"),
+          thumbnailUrl: new URL(""),
 
           latitude: data.x,
           longitude: data.y,
@@ -40,16 +46,18 @@ export default function RestaurantDetail() {
   const getReviews = () => {
     supabase
       .from("reviews")
-      .select("*")
+      .select("*, users( nickname )")
       .eq("restaurant_id", id)
       .then(({ data }) => {
-        const newData: Review[] = data?.map((item) => {
+        const newData: ReviewWithNickname[] = data?.map((item) => {
           return {
             restaurantID: item.restaurant_id,
             userId: item.user_id,
             comment: item.content,
             rating: item.rating,
             createdAt: item.created_at,
+
+            nickname: item.users.nickname,
           };
         });
 
@@ -125,7 +133,7 @@ export default function RestaurantDetail() {
         {/* 리뷰 목록 */}
         <div className="flex flex-col gap-2">
           {reviews?.map((review, idx) => (
-            <ReviewCard key={idx} review={review} />
+            <ReviewCard key={idx} review={review} title={review.nickname} />
           ))}
         </div>
       </div>
