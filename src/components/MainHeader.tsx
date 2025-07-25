@@ -19,7 +19,7 @@ export default function MainHeader() {
   };
 
   return (
-    <header className="flex justify-between items-center w-full px-6 py-2 bg-[#fff2ed]  border-b border-[#ffd9cc] sticky top-0 z-50 mb-2">
+    <header className="flex justify-between items-center w-full px-6 py-4 bg-[#ffcfc2] border-b border-[#ffb8a9] sticky top-0 z-50 mb-2">
       {/* 왼쪽 로고 */}
       <div className="flex items-center space-x-2">
         <button

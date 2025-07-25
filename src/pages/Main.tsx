@@ -5,12 +5,10 @@ import supabase from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchIcon } from "lucide-react";
+import SignupCouponBanner from "@/components/banner";
 
 interface RestaurantWithStats extends Restaurant {
-  /// 별점 평균
   averageRating: number;
-
-  /// 좋아요한 유저 수
   likedUserCount: number;
 }
 
@@ -20,10 +18,7 @@ export default function MainPage() {
     null
   );
   const [likedList, setLikedList] = useState<
-    {
-      restaurant_id: number;
-      liked: boolean;
-    }[]
+    { restaurant_id: number; liked: boolean }[]
   >([]);
 
   const search = async () => {
@@ -33,17 +28,13 @@ export default function MainPage() {
       .ilike("place_name", `%${searchValue}%`)
       .limit(searchValue === "" ? 20 : Infinity);
 
-    if (!data) {
-      return;
-    }
-
-    console.log(data);
+    if (!data) return;
 
     const newData: RestaurantWithStats[] = data.map((item) => {
       const averageRating = item.reviews.length
-        ? item.reviews.reduce((acc, cur) => acc + cur.rating, 0)
+        ? item.reviews.reduce((acc, cur) => acc + cur.rating, 0) /
+          item.reviews.length
         : 0;
-
       const likedUserCount = item.liked.length;
 
       return {
@@ -56,7 +47,6 @@ export default function MainPage() {
         telephone: item.phone,
         openingHour: "",
         category: item.category,
-
         averageRating,
         likedUserCount,
       };
@@ -67,7 +57,6 @@ export default function MainPage() {
 
   const likedSearch = async () => {
     const session = await supabase.auth.getSession();
-
     await supabase
       .from("liked")
       .select("*")
@@ -84,13 +73,20 @@ export default function MainPage() {
 
   return (
     <>
+      <SignupCouponBanner />
+
       <div className="flex flex-row gap-4 items-center">
         <Input
           className="h-12"
           type="text"
-          placeholder="검색어를 여기에 입력하세요"
+          placeholder="뭐 먹지?"
           onChange={(e) => {
             setSearchValue(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              search();
+            }
           }}
         />
 
@@ -105,9 +101,10 @@ export default function MainPage() {
         </Button>
       </div>
 
+      {/* 검색 결과 */}
       <div className="flex flex-col gap-4 p-4">
-        {restaurants?.map((item, idx) => {
-          return (
+        {restaurants && restaurants.length > 0 ? (
+          restaurants.map((item, idx) => (
             <RestaurantCard
               key={idx}
               restaurant={{ ...item }}
@@ -119,8 +116,19 @@ export default function MainPage() {
               }
               onSearch={likedSearch}
             />
-          );
-        })}
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center py-24 bg-[#fff2ed] rounded-lg  mt-10">
+            <img
+              src="/no_results.png"
+              alt="검색 결과 없음"
+              className="w-48 h-48 object-contain mb-6 opacity-70"
+            />
+            <p className="text-2xl text-[#e4573d] font-jua">
+              검색 결과가 없습니다 😢
+            </p>
+          </div>
+        )}
       </div>
     </>
   );
