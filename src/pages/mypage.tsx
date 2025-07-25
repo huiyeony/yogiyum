@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { User, Settings } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import supabase from '../lib/supabase';
-import ReviewCard from '@/components/ReviewCard';
-import type { Review } from '@/entities/review';
+import { useEffect, useState } from "react";
+import { User, Settings } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import supabase from "../lib/supabase";
+import ReviewCard from "@/components/ReviewCard";
+import type { Review } from "@/entities/review";
 interface ReviewWithRestaurant extends Review {
   restaurants: {
     place_name: string;
@@ -12,8 +12,8 @@ interface ReviewWithRestaurant extends Review {
 
 function MyPage() {
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState('');
-  const [createdAt, setCreatedAt] = useState('');
+  const [nickname, setNickname] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
   const [userId, setUserId] = useState<number | null>(null);
   const [comments, setComments] = useState<ReviewWithRestaurant[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,13 +22,13 @@ function MyPage() {
   useEffect(() => {
     const fetchUserAndComments = async () => {
       const { data: user, error: userErr } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', 21)
+        .from("users")
+        .select("*")
+        .eq("id", 21)
         .single();
 
       if (userErr || !user) {
-        console.error('유저를 찾지 못했습니다.', userErr);
+        console.error("유저를 찾지 못했습니다.", userErr);
         setLoading(false);
         return;
       }
@@ -38,12 +38,12 @@ function MyPage() {
       setUserId(user.id);
 
       const { data: reviews, error: reviewErr } = await supabase
-        .from('reviews')
-        .select('*, restaurants(place_name)')
-        .eq('user_id', 21); //
+        .from("reviews")
+        .select("*, restaurants(place_name)")
+        .eq("user_id", 21); //
 
       if (reviewErr) {
-        console.error('리뷰 에러:', reviewErr);
+        console.error("리뷰 에러:", reviewErr);
       } else {
         setComments(reviews);
       }
@@ -57,7 +57,7 @@ function MyPage() {
   if (loading) return <div className="p-8 text-center">로딩 중...</div>;
   const displayedComments = showAll ? comments : comments.slice(0, 5);
   const hasMore = comments.length > 5;
-  const toggleLabel = showAll ? '접기' : '더보기';
+  const toggleLabel = showAll ? "접기" : "더보기";
 
   if (!userId) {
     return (
@@ -65,7 +65,8 @@ function MyPage() {
         <p className="text-neutral-500">로그인 후 이용해주세요.</p>
         <button
           className="mt-4 px-4 py-2 bg-black text-white rounded-md"
-          onClick={() => navigate('/')}>
+          onClick={() => navigate("/")}
+        >
           홈으로 이동
         </button>
       </div>
@@ -85,8 +86,9 @@ function MyPage() {
         </div>
         <button
           onClick={() =>
-            navigate('/edit-profile', { state: { nickname, id: userId } })
-          }>
+            navigate("/edit-profile", { state: { nickname, id: userId } })
+          }
+        >
           <Settings />
         </button>
       </div>
@@ -98,7 +100,8 @@ function MyPage() {
         {hasMore && (
           <button
             className="text-sm text-neutral-500"
-            onClick={() => setShowAll((prev) => !prev)}>
+            onClick={() => setShowAll((prev) => !prev)}
+          >
             {toggleLabel}
           </button>
         )}
@@ -130,11 +133,12 @@ function MyPage() {
       <div className="flex flex-col justify-end items-center">
         <button
           onClick={() => {
-            localStorage.removeItem('nickname');
-            localStorage.removeItem('user_id');
-            navigate('/');
+            localStorage.removeItem("nickname");
+            localStorage.removeItem("user_id");
+            navigate("/");
           }}
-          className="border py-3 px-12 rounded-2xl bg-neutral-200 bottom-4">
+          className="border py-3 px-12 rounded-2xl bg-neutral-200 bottom-4"
+        >
           로그아웃
         </button>
       </div>

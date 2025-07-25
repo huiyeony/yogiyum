@@ -83,7 +83,10 @@ function UserButton() {
           {user.nickname}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-white border border-[#ffd9cc] shadow-md rounded-md">
-          <DropdownMenuItem className="hover:bg-[#fff0eb] hover:pl-4 text-[#e4573d] transition-all duration-200">
+          <DropdownMenuItem
+            className="hover:bg-[#fff0eb] hover:pl-4 text-[#e4573d] transition-all duration-200"
+            onClick={() => navigate("/myPage")}
+          >
             마이페이지
           </DropdownMenuItem>
           <DropdownMenuItem

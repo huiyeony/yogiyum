@@ -1,5 +1,6 @@
 import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import ReviewCard from "@/components/ReviewCard";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
@@ -7,11 +8,16 @@ import type { Review } from "@/entities/review";
 import supabase from "@/lib/supabase";
 import { SendIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-export default function RestaurantDetail() {
-  const id = "8";
+interface ReviewWithNickname extends Review {
+  nickname: string;
+}
+
+export default function RestaurantDetailPage() {
+  const { id } = useParams();
   const [restaurant, setRestaurant] = useState<Restaurant>();
-  const [reviews, setReviews] = useState<Review[]>();
+  const [reviews, setReviews] = useState<ReviewWithNickname[]>();
 
   const getRestaurantInfo = () => {
     supabase
@@ -20,6 +26,7 @@ export default function RestaurantDetail() {
       .eq("uid", id)
       .single()
       .then(({ data }) => {
+        console.log(data);
         setRestaurant({
           id: data.uid,
           name: data.place_name,
@@ -32,7 +39,7 @@ export default function RestaurantDetail() {
           telephone: data.phone,
 
           openingHour: "",
-          category: RestaurantCategory.Korean,
+          category: data.category,
         });
       });
   };
@@ -40,16 +47,18 @@ export default function RestaurantDetail() {
   const getReviews = () => {
     supabase
       .from("reviews")
-      .select("*")
+      .select("*, users( nickname )")
       .eq("restaurant_id", id)
       .then(({ data }) => {
-        const newData: Review[] = data?.map((item) => {
+        const newData: ReviewWithNickname[] = data?.map((item) => {
           return {
             restaurantID: item.restaurant_id,
             userId: item.user_id,
             comment: item.content,
             rating: item.rating,
             createdAt: item.created_at,
+
+            nickname: item.users.nickname,
           };
         });
 
@@ -64,49 +73,62 @@ export default function RestaurantDetail() {
   }, [id]);
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-row items-center gap-2">
+    <div className="flex flex-col gap-6">
+      {/* 제목 영역 */}
+      <div className="flex flex-row items-center gap-2 mt-4">
         <h1 className="text-3xl font-bold">{restaurant?.name}</h1>
         {restaurant?.category && (
           <RestaurantCategoryBadge category={restaurant?.category} />
         )}
       </div>
+      <div className="flex flex-col gap-4">
+        {/* 썸네일 영역 */}
+        <img className="w-full aspect-video rounded-md border" />
+        {/* 상세 정보 영역 */}
+        <div className="w-full flex flex-col gap-2">
+          <dl className="flex flex-row gap-6 text-right">
+            <dt className="w-15 flex items-center justify-start font-semibold">
+              <Badge variant={"secondary"} className="text-sm font-semibold">
+                주소
+              </Badge>
+            </dt>
+            <dd>{restaurant?.address}</dd>
+          </dl>
 
-      <div className="w-full aspect-video p-2">
-        <img className="w-full h-full rounded-md border" />
+          <dl className="flex flex-row gap-6 text-right">
+            <dt className="w-15 flex items-center justify-start font-semibold">
+              <Badge variant={"secondary"} className="text-sm font-semibold">
+                연락처
+              </Badge>
+            </dt>
+
+            <dd>
+              {restaurant?.telephone ?? (
+                <small className="text-neutral-500">
+                  연락처 정보가 없습니다.
+                </small>
+              )}
+            </dd>
+          </dl>
+
+          <dl className="flex flex-row gap-6 text-right">
+            <dt className="w-15 flex items-center justify-start font-semibold">
+              <Badge variant={"secondary"} className="text-sm font-semibold">
+                영없 시간
+              </Badge>
+            </dt>
+            <dd>
+              {restaurant?.openingHour != "" ? (
+                restaurant?.openingHour
+              ) : (
+                <small className="text-neutral-500">
+                  영업 시간 정보가 없습니다.
+                </small>
+              )}
+            </dd>
+          </dl>
+        </div>
       </div>
-
-      <div className="flex flex-col gap-2">
-        <dl className="flex flex-row gap-2 text-right">
-          <dt className="w-1/4 font-semibold">주소</dt>
-          <dd>{restaurant?.address}</dd>
-        </dl>
-
-        <dl className="flex flex-row gap-2 text-right">
-          <dt className="w-1/4 font-semibold">연락처</dt>
-          <dd>
-            {restaurant?.telephone ?? (
-              <small className="text-neutral-500">
-                연락처 정보가 없습니다.
-              </small>
-            )}
-          </dd>
-        </dl>
-
-        <dl className="flex flex-row gap-2 text-right">
-          <dt className="w-1/4 font-semibold">영업 시간</dt>
-          <dd>
-            {restaurant?.openingHour != "" ? (
-              restaurant?.openingHour
-            ) : (
-              <small className="text-neutral-500">
-                영업 시간 정보가 없습니다.
-              </small>
-            )}
-          </dd>
-        </dl>
-      </div>
-
       {/* 리뷰 부분 */}
       <div className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">리뷰</h2>
@@ -125,7 +147,7 @@ export default function RestaurantDetail() {
         {/* 리뷰 목록 */}
         <div className="flex flex-col gap-2">
           {reviews?.map((review, idx) => (
-            <ReviewCard key={idx} review={review} />
+            <ReviewCard key={idx} review={review} title={review.nickname} />
           ))}
         </div>
       </div>
