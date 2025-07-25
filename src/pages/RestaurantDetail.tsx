@@ -32,7 +32,6 @@ export default function RestaurantDetailPage() {
       rating: reviewRating,
       content: reviewContent,
       restaurant_id: restaurant?.id,
-      user_id: 21,
     });
 
     if (error) {

@@ -26,9 +26,8 @@ export default function ReviewCard({
   return (
     <Card className="flex flex-col gap-4 bg-white rounded-md text-black p-4">
       <header className="flex flex-row justify-between items-center">
-        <div className="flex flex-row items-center">
-          <span className="text-lg font-bold">{review.userId}</span>
-          <h3 className="text-base font-semibold mr-4">{title}</h3>
+        <div className="flex flex-row gap-2 items-center">
+          <h3 className="text-lg font-bold">{title}</h3>
           <RatingStar rating={review.rating} digit={0} />
         </div>
 
