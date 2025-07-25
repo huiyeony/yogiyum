@@ -51,7 +51,7 @@ export default function RestaurantCard({
   return (
     <Card className="flex flex-row justify-between p-4">
       {/* 이미지 부분 */}
-      <div className="h-40 aspect-square">
+      <div className="h-30 aspect-square">
         <img src={restaurant.thumbnailUrl.toString()} className="rounded-sm" />
       </div>
 
@@ -62,7 +62,7 @@ export default function RestaurantCard({
             <h2 className="flex-1 text-2xl font-bold">{restaurant.name}</h2>
           </Link> */}
           <Link to={`/restaurant/${restaurant.id}`}>
-            <h2 className="flex-1 text-2xl font-bold hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
+            <h2 className="flex-1 text-xl font-semibold hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
               {restaurant.name}
             </h2>
           </Link>
