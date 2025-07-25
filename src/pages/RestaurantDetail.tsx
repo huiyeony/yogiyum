@@ -7,16 +7,11 @@ import type { Review } from "@/entities/review";
 import supabase from "@/lib/supabase";
 import { SendIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
-interface ReviewWithNickname extends Review {
-  nickname: string;
-}
-
-export default function RestaurantDetailPage() {
-  const { id } = useParams();
+export default function RestaurantDetail() {
+  const id = "8";
   const [restaurant, setRestaurant] = useState<Restaurant>();
-  const [reviews, setReviews] = useState<ReviewWithNickname[]>();
+  const [reviews, setReviews] = useState<Review[]>();
 
   const getRestaurantInfo = () => {
     supabase
@@ -25,7 +20,6 @@ export default function RestaurantDetailPage() {
       .eq("uid", id)
       .single()
       .then(({ data }) => {
-        console.log(data);
         setRestaurant({
           id: data.uid,
           name: data.place_name,
@@ -38,7 +32,7 @@ export default function RestaurantDetailPage() {
           telephone: data.phone,
 
           openingHour: "",
-          category: data.category,
+          category: RestaurantCategory.Korean,
         });
       });
   };
@@ -46,18 +40,16 @@ export default function RestaurantDetailPage() {
   const getReviews = () => {
     supabase
       .from("reviews")
-      .select("*, users( nickname )")
+      .select("*")
       .eq("restaurant_id", id)
       .then(({ data }) => {
-        const newData: ReviewWithNickname[] = data?.map((item) => {
+        const newData: Review[] = data?.map((item) => {
           return {
             restaurantID: item.restaurant_id,
             userId: item.user_id,
             comment: item.content,
             rating: item.rating,
             createdAt: item.created_at,
-
-            nickname: item.users.nickname,
           };
         });
 
@@ -133,7 +125,7 @@ export default function RestaurantDetailPage() {
         {/* 리뷰 목록 */}
         <div className="flex flex-col gap-2">
           {reviews?.map((review, idx) => (
-            <ReviewCard key={idx} review={review} title={review.nickname} />
+            <ReviewCard key={idx} review={review} />
           ))}
         </div>
       </div>
