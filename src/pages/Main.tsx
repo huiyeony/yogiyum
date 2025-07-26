@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
