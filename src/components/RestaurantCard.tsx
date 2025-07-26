@@ -46,10 +46,21 @@ export default function RestaurantCard({
   };
 
   return (
-    <Card className="flex flex-row justify-between p-4 transition-opacity duration-500">
-      {/* 이미지 부분 */}
-      <div className="h-30 aspect-square relative rounded-sm overflow-hidden bg-gray-100">
-        {/* 로딩 중인 gif */}
+    <Card className="w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(50%-0.4rem)] relative flex flex-col rounded-xl overflow-hidden bg-[#fffaf6] transition-transform duration-100 hover:scale-[1.02]">
+      {/* 좋아요 버튼 */}
+      <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-center bg-white rounded-full shadow p-1">
+        <Heart
+          className="cursor-pointer"
+          fill={isLiked ? "#ef4444" : "gray"}
+          strokeWidth={0}
+          size={20}
+          onClick={likedButtonClick}
+        />
+        <span className="text-[10px] text-gray-500 mt-0.5">{likedCount}</span>
+      </div>
+
+      {/* 이미지 영역 */}
+      <div className="relative w-full aspect-[4/3] bg-gray-100 mt-1">
         {!imageLoaded && (
           <img
             src="/loading.gif"
@@ -57,8 +68,6 @@ export default function RestaurantCard({
             className="absolute inset-0 w-full h-full object-contain opacity-70"
           />
         )}
-
-        {/* 실제 썸네일 이미지 */}
         <img
           src={restaurant.thumbnailUrl.toString()}
           alt={restaurant.name}
@@ -70,27 +79,20 @@ export default function RestaurantCard({
         />
       </div>
 
-      {/* 정보 영역 */}
-      <div className="flex-1 flex flex-col gap-4 px-4">
+      {/* 텍스트 정보 */}
+      <div className="flex flex-col gap-2 px-4 py-3">
         <Link to={`/restaurant/${restaurant.id}`}>
-          <h2 className="text-xl font-semibold hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
+          <h2 className="text-base font-semibold text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
             {restaurant.name}
           </h2>
         </Link>
-        <RatingStar rating={rating} digit={1} />
-        <RestaurantCategoryBadge category={restaurant.category} />
-      </div>
 
-      {/* 찜 버튼 */}
-      <div className="flex flex-col items-center justify-start">
-        <Heart
-          className="cursor-pointer"
-          fill={isLiked ? "#ef4444" : "gray"}
-          strokeWidth={0}
-          size={40}
-          onClick={likedButtonClick}
-        />
-        <span className="text-sm text-neutral-500">{likedCount}</span>
+        <div className="flex items-center gap-1 text-sm text-gray-500">
+          <RatingStar rating={rating} digit={1} />
+          <span className="text-xs">({rating.toFixed(1)})</span>
+        </div>
+
+        <RestaurantCategoryBadge category={restaurant.category} />
       </div>
     </Card>
   );

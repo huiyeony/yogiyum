@@ -9,37 +9,33 @@ import {
 } from "@/components/ui/dropdown-menu";
 import supabase from "@/lib/supabase";
 import { ShoppingBagIcon } from "lucide-react";
-import { emojiList } from "@/constants/emojiList";
+import EmojiButton from "./EmojiButton";
 
 export default function MainHeader() {
-  const [emojiIndex, setEmojiIndex] = useState<number>(0);
-
-  const handleClickEmoji = () => {
-    setEmojiIndex((prev) => (prev + 1) % emojiList.length);
-  };
-
   return (
-    <header className="flex justify-between items-center w-full px-6 py-4 bg-[#ffcfc2] border-b border-[#ffb8a9] sticky top-0 z-50 mb-2">
+    <header
+      className="flex justify-between items-center w-full px-6 py-3 bg-[#fffaf6]]
+             sticky top-0 z-50 mb-2"
+    >
       {/* 왼쪽 로고 */}
-      <div className="flex items-center space-x-2">
-        <button
-          onClick={handleClickEmoji}
-          className="text-3xl text-[#e4573d] animate-bounce hover:scale-125 hover:text-[#ff5630] hover:drop-shadow transition-all duration-300 focus:outline-none"
-        >
-          {emojiList[emojiIndex]}
-        </button>
+      <div className="flex items-center gap-2">
+        <EmojiButton />
+
         <Link to="/">
-          <h1 className="text-2xl font-bold text-[#e4573d] hover:text-[#ff7043] hover:-translate-y-0.5 transition-all duration-300">
+          <h1
+            className="text-2xl sm:text-3xl font-Jua text-[#2c3e50] transition-all duration-300 ease-in-out 
+                   hover:text-[#ff7043] hover:-translate-y-1 hover:scale-105 hover:tracking-wide"
+          >
             요기얌
           </h1>
         </Link>
       </div>
 
       {/* 오른쪽 아이콘들 */}
-      <div className="flex items-center space-x-5">
+      <div className="flex items-center gap-4 sm:gap-6 text-[#e4573d]">
         <Link
           to=""
-          className="text-[#e4573d] hover:text-[#ff5630] hover:scale-110 transition-all duration-300"
+          className="hover:text-[#ff5630] hover:scale-110 transition-all duration-300"
         >
           <ShoppingBagIcon size={22} />
         </Link>
@@ -79,7 +75,7 @@ function UserButton() {
   if (user) {
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger className="text-[#e4573d] hover:text-[#ff7043] font-medium px-2 py-1 rounded-md hover:bg-[#ffe9e3] hover:shadow-sm transition-all duration-300 focus:outline-none">
+        <DropdownMenuTrigger className="text-[#2c3e50] hover:text-[#ff7043] font-medium px-2 py-1 rounded-md hover:bg-[#ffe9e3] hover:shadow-sm transition-all duration-300 focus:outline-none">
           {user.nickname}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-white border border-[#ffd9cc] shadow-md rounded-md">

@@ -37,11 +37,11 @@ export default function SlidingBanner() {
   if (!visible) return null;
 
   return (
-    <div className="relative w-full h-40 overflow-hidden rounded-lg mb-6">
+    <div className="relative w-full h-40 overflow-hidden mb-2 ">
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
-          className={`absolute top-0 left-0 w-full h-full flex justify-between items-center px-6 transition-colors duration-500 ${banners[index].bgColor}`}
+          className={`absolute top-0 left-0 w-full h-full flex justify-between items-center px-6  transition-colors duration-500 ${banners[index].bgColor}`}
           initial={{ x: direction * 100 + "%", opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -direction * 100 + "%", opacity: 0 }}

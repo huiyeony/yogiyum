@@ -2,6 +2,7 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { emojiList } from "@/constants/emojiList";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import EmojiButton from "@/components/EmojiButton";
 import supabase from "@/lib/supabase";
 
 const TempPage = () => {
@@ -33,12 +34,6 @@ const TempPage = () => {
     setUser(null);
     setLoading(false);
     navigate("/login");
-  };
-
-  //이모지 눌렸을때
-  const [emojiIndex, setEmojiIndex] = useState<number>(0);
-  const handleClickEmoji = () => {
-    setEmojiIndex((prev) => (prev + 1) % emojiList.length);
   };
 
   //표시할 메세지
@@ -76,12 +71,7 @@ const TempPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
       <div className="mb-8 text-center space-y-2">
-        <button
-          className="inline-block animate-bounce text-4xl"
-          onClick={handleClickEmoji}
-        >
-          {emojiList[emojiIndex]}
-        </button>
+        <EmojiButton />
         <Link to="/">
           <h1 className="text-3xl font-jua text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
             요기얌
