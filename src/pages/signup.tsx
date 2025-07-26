@@ -2,22 +2,11 @@ import { AuthForm } from "@/components/AuthForm";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
 import Fade from "@/components/ShiftPage";
-import { emojiList } from "@/constants/emojiList";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import EmojiButton from "@/components/EmojiButton";
 const SignUpPage = () => {
   const navigate = useNavigate();
-
-  // 이모지 눌렸을 때
-  const [emojiIndex, setEmojiIndex] = useState<number>(0);
-  const handleClickEmoji = () => {
-    if (emojiIndex + 1 === emojiList.length) {
-      setEmojiIndex(0);
-    } else {
-      setEmojiIndex(emojiIndex + 1);
-    }
-  };
 
   // 회원가입 눌렀을 때
   const handleSignup = async (email: string, password: string) => {
@@ -59,12 +48,7 @@ const SignUpPage = () => {
     <Fade>
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
         <div className="mb-8 text-center space-y-2">
-          <button
-            className="inline-block animate-bounce text-4xl"
-            onClick={handleClickEmoji}
-          >
-            {emojiList[emojiIndex]}
-          </button>
+          <EmojiButton />
           <Link to="/">
             <h1 className="text-3xl font-jua text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
               요기얌

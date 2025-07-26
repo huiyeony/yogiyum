@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import supabase from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { emojiList } from "@/constants/emojiList";
+import EmojiButton from "@/components/EmojiButton";
 import { useAuth } from "@/contexts/AuthContext";
 
 const VerificationPage = () => {
@@ -45,20 +45,10 @@ const VerificationPage = () => {
     navigate("/temp");
   };
 
-  const [emojiIndex, setEmojiIndex] = useState<number>(0);
-  const handleClickEmoji = () => {
-    setEmojiIndex((prev) => (prev + 1) % emojiList.length);
-  };
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
       <div className="mb-8 text-center space-y-2">
-        <button
-          className="inline-block animate-bounce text-4xl"
-          onClick={handleClickEmoji}
-        >
-          {emojiList[emojiIndex]}
-        </button>
+        <EmojiButton />
         <h1 className="text-4xl font-gowun font-bold text-foreground">
           요기얌
         </h1>
