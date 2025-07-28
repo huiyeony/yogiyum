@@ -1,33 +1,43 @@
-
 import { useEffect, useState } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
 import supabase from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import SignupCouponBanner from "@/components/banner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface RestaurantWithStats extends Restaurant {
   averageRating: number;
   likedUserCount: number;
 }
 
+type SortType = "liked_count" | "review_count" | "average_rating";
+
 export default function MainPage() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [restaurants, setRestaurants] = useState<RestaurantWithStats[] | null>(
-    null
+    null,
   );
   const [likedList, setLikedList] = useState<
     { restaurant_id: number; liked: boolean }[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [sortType, setSortType] = useState<SortType>("liked_count");
 
   const search = async () => {
     setIsLoading(true);
 
     const { data } = await supabase
-      .from("restaurants")
-      .select("*, reviews (rating), liked (*)")
-      .ilike("place_name", `%${searchValue}%`)
+      .from("restaurants_with_stats")
+      .select("*")
+      .order(sortType, { ascending: false })
+      .ilike("name", `%${searchValue}%`)
       .limit(searchValue === "" ? 20 : Infinity);
 
     if (!data) {
@@ -36,25 +46,18 @@ export default function MainPage() {
     }
 
     const newData: RestaurantWithStats[] = data.map((item) => {
-      const averageRating = item.reviews.length
-        ? item.reviews.reduce((acc, cur) => acc + cur.rating, 0) /
-          item.reviews.length
-        : 0;
-
-      const likedUserCount = item.liked.length;
-
       return {
-        id: item.uid,
-        name: item.place_name,
+        id: item.id,
+        name: item.name,
         thumbnailUrl: new URL("https://picsum.photos/500"),
-        latitude: item.y,
-        longitude: item.x,
-        address: item.road_address_name,
+        latitude: item.latitude,
+        longitude: item.longitude,
+        address: item.address,
         telephone: item.phone,
         openingHour: "",
         category: item.category,
-        averageRating,
-        likedUserCount,
+        averageRating: item.average_rating,
+        likedUserCount: item.liked_count,
       };
     });
 
@@ -76,7 +79,7 @@ export default function MainPage() {
   useEffect(() => {
     search();
     likedSearch();
-  }, []);
+  }, [sortType]);
 
   return (
     <>
@@ -99,6 +102,8 @@ export default function MainPage() {
           />
         </div>
 
+        <SortSelector onChange={setSortType} />
+
         {/* 결과 섹션 */}
         <div className="p-2">
           {isLoading ? (
@@ -117,7 +122,7 @@ export default function MainPage() {
               {restaurants.map((item, idx) => (
                 <RestaurantCard
                   key={idx}
-                  restaurant={{ ...item }}
+                  restaurant={item}
                   rating={item.averageRating}
                   likedCount={item.likedUserCount}
                   isLiked={
@@ -143,5 +148,20 @@ export default function MainPage() {
         </div>
       </main>
     </>
+  );
+}
+
+function SortSelector({ onChange }: { onChange: (value: SortType) => void }) {
+  return (
+    <Select onValueChange={onChange} defaultValue="liked_count">
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="정렬 방식" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="liked_count">찜하기 많은 순</SelectItem>
+        <SelectItem value="review_count">리뷰 많은 순</SelectItem>
+        <SelectItem value="average_rating">리뷰 평균 점수 높은 순</SelectItem>
+      </SelectContent>
+    </Select>
   );
 }
