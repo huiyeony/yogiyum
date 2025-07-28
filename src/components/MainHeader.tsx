@@ -6,11 +6,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BookmarkIcon } from "lucide-react";
+
 import EmojiButton from "./EmojiButton";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function MainHeader() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLikeClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    if (!user) {
+      e.preventDefault(); // 링크 이동 막기
+      navigate("/login");
+    }
+  };
   return (
     <header
       className="flex justify-between items-center w-full px-6 py-3 
@@ -34,11 +45,12 @@ export default function MainHeader() {
       <div className="flex items-center gap-4 sm:gap-6 text-[#e4573d]">
         <Link
           to="/LikedRestaurantsPage"
-          className="hover:text-[#ff5630] hover:scale-110 transition-all duration-300 font-[Dongle] text-2xl"
+          className="hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-[Dongle] text-2xl"
+          onClick={handleLikeClick}
         >
           찜 리스트
         </Link>
-        <span className="w-[1px] h-5 bg-gray-400 opacity-50" />
+        <span className="w-[2px] h-6 bg-red-500 opacity-50" />
         <UserButton />
       </div>
     </header>
@@ -46,7 +58,7 @@ export default function MainHeader() {
 }
 
 function UserButton() {
-  const { user, loading, setLoading, setUser, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
 
   const navigate = useNavigate();
 
@@ -63,7 +75,7 @@ function UserButton() {
   if (user) {
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger className="text-[#2c3e50] hover:text-[#ff7043] font-medium px-2 py-1 rounded-md hover:bg-[#ffe9e3] hover:shadow-sm transition-all duration-300 focus:outline-none font-[jua]">
+        <DropdownMenuTrigger className="text-[#2c3e50] hover:scale-120 transition-all duration-300 font-medium px-2 py-1 rounded-md focus:outline-none font-[jua]">
           {user.nickname}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-white border border-[#ffd9cc] shadow-md rounded-md">
