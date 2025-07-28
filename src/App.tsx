@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import IntroPage from "@/pages/IntroPage";
 import LoginPage from "./pages/login";
 import SignUpPage from "./pages/signup";
 import TempPage from "./pages/temp";
@@ -17,8 +18,11 @@ const App = () => {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/temp" element={<TempPage />} />
 
+      {/* 인트로 페이지 추가 */}
+      <Route path="/" element={<IntroPage />} />
       <Route element={<Layout />}>
-        <Route path="/" element={<MainPage />} />
+        <Route path="/Main" element={<MainPage />} />
+        <Route path="/intro" element={<IntroPage />} />
         <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
 
         <Route path="/temp" element={<TempPage />} />
