@@ -46,7 +46,7 @@ export default function RestaurantCard({
   };
 
   return (
-    <Card className="w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(50%-0.4rem)] relative flex flex-col rounded-xl overflow-hidden bg-[#fffaf6] transition-transform duration-100 hover:scale-[1.02]">
+    <Card className="w-full relative flex flex-col rounded-xl overflow-hidden bg-[#fffaf6] transition-transform duration-100 hover:scale-[1.02]">
       {/* 좋아요 버튼 */}
       <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-center bg-white rounded-full shadow p-1">
         <Heart
