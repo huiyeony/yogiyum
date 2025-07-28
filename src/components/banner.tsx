@@ -4,17 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const banners = [
   {
-    text: "지금 회원가입하면 5천원 쿠폰 드려요!",
+    text: "회원가입 시 5천원 쿠폰 지급!💸",
     image: "/banner1.png",
     bgColor: "bg-green-200",
   },
   {
-    text: "첫 리뷰 작성 시 포인트 지급!",
+    text: "곧 끝나가는 올해 할인 혜택⏰",
     image: "/banner2.png",
     bgColor: "bg-blue-200",
   },
   {
-    text: "이벤트 참여하고 식사권 받아가세요!",
+    text: "맛있게 먹고 커피쿠폰까지!☕",
     image: "/banner3.png",
     bgColor: "bg-yellow-200",
   },
@@ -57,7 +57,7 @@ export default function SlidingBanner() {
           </div>
 
           {/* 오른쪽 텍스트 */}
-          <div className="flex-1 ml-6 flex items-center justify-between">
+          <div className="flex-1 ml-6 flex items-center justify-between font-[jua]">
             <motion.div
               whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 200 }}
