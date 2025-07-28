@@ -49,7 +49,7 @@ const SignUpPage = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
         <div className="mb-8 text-center space-y-2">
           <EmojiButton />
-          <Link to="/">
+          <Link to="/Main">
             <h1 className="text-7xl font-[Dongle] text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
               요기얌
             </h1>

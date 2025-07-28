@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import supabase from "@/lib/supabase";
-import { LogOut, ShoppingBagIcon } from "lucide-react";
+import { ShoppingBagIcon } from "lucide-react";
 import EmojiButton from "./EmojiButton";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -22,7 +22,7 @@ export default function MainHeader() {
       <div className="flex items-center gap-2">
         <EmojiButton />
 
-        <Link to="/">
+        <Link to="/Main">
           <h1
             className="text-2xl sm:text-5xl font-[Dongle] text-[#2c3e50] transition-all duration-300 ease-in-out 
                    hover:text-[#ff7043] hover:-translate-y-1 hover:scale-105 hover:tracking-wide"
