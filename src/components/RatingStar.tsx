@@ -18,39 +18,41 @@ export default function RatingStar({
   const borderColor = "#71717a";
 
   return (
-    <div className="flex flex-row gap-1">
-      {new Array(5).fill(0).map((_, index) => {
-        if (rating - index >= 1) {
-          return (
-            <Star
-              size={size}
-              key={index}
-              fill={fill}
-              color={borderColor}
-              strokeWidth={strokeWidth}
-            />
-          );
-        } else if (rating - index < 1 && rating - index > 0) {
-          return (
-            <StarHalf
-              size={size}
-              key={index}
-              fill={fill}
-              color={borderColor}
-              strokeWidth={strokeWidth}
-            />
-          );
-        } else {
-          return (
-            <Star
-              size={size}
-              key={index}
-              strokeWidth={strokeWidth}
-              color={borderColor}
-            />
-          );
-        }
-      })}
+    <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row gap-1">
+        {new Array(5).fill(0).map((_, index) => {
+          if (rating - index >= 1) {
+            return (
+              <Star
+                size={size}
+                key={index}
+                fill={fill}
+                color={borderColor}
+                strokeWidth={strokeWidth}
+              />
+            );
+          } else if (rating - index < 1 && rating - index > 0) {
+            return (
+              <StarHalf
+                size={size}
+                key={index}
+                fill={fill}
+                color={borderColor}
+                strokeWidth={strokeWidth}
+              />
+            );
+          } else {
+            return (
+              <Star
+                size={size}
+                key={index}
+                strokeWidth={strokeWidth}
+                color={borderColor}
+              />
+            );
+          }
+        })}
+      </div>
 
       <span className="text-neutral-500 text-sm">
         {showScore ? rating.toFixed(digit) : ""}

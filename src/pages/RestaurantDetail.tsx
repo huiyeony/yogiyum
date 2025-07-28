@@ -1,3 +1,4 @@
+import RatingStar from "@/components/RatingStar";
 import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import ReviewCard from "@/components/ReviewCard";
 import { Badge } from "@/components/ui/badge";
@@ -9,18 +10,31 @@ import type { Review } from "@/entities/review";
 import supabase from "@/lib/supabase";
 import { SendIcon, Star } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 interface ReviewWithNickname extends Review {
   nickname: string;
 }
 
+interface RestaurantWithExtendInfo extends Restaurant {
+  /// kakao map id
+  kakaomapId: string;
+
+  /// 평균 점수
+  averageRating: number;
+}
+
 export default function RestaurantDetailPage() {
   const { id } = useParams();
-  const [restaurant, setRestaurant] = useState<Restaurant>();
+  const [restaurant, setRestaurant] = useState<RestaurantWithExtendInfo>();
   const [reviews, setReviews] = useState<ReviewWithNickname[]>();
   const [reviewRating, setReviewRating] = useState<number>(0);
   const [reviewContent, setReviewContent] = useState<string>("");
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+
+  supabase.auth.getSession().then(({ data }) => {
+    setIsLogin(data.session !== null);
+  });
 
   const handleReviewSubmit = async () => {
     if (reviewRating <= 0 || reviewRating > 5) {
@@ -46,25 +60,28 @@ export default function RestaurantDetailPage() {
 
   const getRestaurantInfo = () => {
     supabase
-      .from("restaurants")
+      .from("restaurants_with_stats")
       .select("*")
-      .eq("uid", id)
+      .eq("id", id)
       .single()
       .then(({ data }) => {
         console.log(data);
         setRestaurant({
-          id: data.uid,
-          name: data.place_name,
+          id: data.id,
+          name: data.name,
           thumbnailUrl: new URL("https://picsum.photos/500"),
 
-          latitude: data.x,
-          longitude: data.y,
+          latitude: data.latitude,
+          longitude: data.longitude,
 
-          address: data.road_address_name,
+          address: data.address,
           telephone: data.phone,
 
           openingHour: "",
           category: data.category,
+
+          kakaomapId: data.kakaomap_id,
+          averageRating: data.average_rating,
         });
       });
   };
@@ -124,13 +141,21 @@ export default function RestaurantDetailPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* 제목 영역 */}
-      <div className="flex flex-row items-center gap-2 mt-4">
-        <h1 className="text-3xl font-bold">{restaurant?.name}</h1>
-        {restaurant?.category && (
-          <RestaurantCategoryBadge category={restaurant?.category} />
-        )}
-      </div>
+      <header className="flex flex-col gap-2">
+        {/* 제목 영역 */}
+        <div className="flex flex-row items-center gap-2 mt-4">
+          <h1 className="text-3xl font-bold">{restaurant?.name}</h1>
+          {restaurant?.category && (
+            <RestaurantCategoryBadge category={restaurant?.category} />
+          )}
+        </div>
+
+        <RatingStar
+          rating={restaurant?.averageRating ?? 0}
+          digit={2}
+          size={28}
+        />
+      </header>
       <div className="flex flex-col gap-4">
         {/* 썸네일 영역 */}
         <img className="w-full aspect-video rounded-md border" />
@@ -142,7 +167,14 @@ export default function RestaurantDetailPage() {
                 주소
               </Badge>
             </dt>
-            <dd>{restaurant?.address}</dd>
+            <dd>
+              <Link
+                className="underline"
+                to={`https://place.map.kakao.com/${restaurant?.kakaomapId}`}
+              >
+                {restaurant?.address}
+              </Link>
+            </dd>
           </dl>
 
           <dl className="flex flex-row gap-6 text-right">
@@ -160,23 +192,6 @@ export default function RestaurantDetailPage() {
               )}
             </dd>
           </dl>
-
-          <dl className="flex flex-row gap-6 text-right">
-            <dt className="w-15 flex items-center justify-start font-semibold">
-              <Badge variant={"secondary"} className="text-sm font-semibold">
-                영업 시간
-              </Badge>
-            </dt>
-            <dd>
-              {restaurant?.openingHour != "" ? (
-                restaurant?.openingHour
-              ) : (
-                <small className="text-neutral-500">
-                  영업 시간 정보가 없습니다.
-                </small>
-              )}
-            </dd>
-          </dl>
         </div>
       </div>
       {/* 리뷰 부분 */}
@@ -190,9 +205,14 @@ export default function RestaurantDetailPage() {
 
             <Textarea
               className="resize-none"
-              placeholder="리뷰를 여기에 작성해주세요."
+              placeholder={
+                isLogin
+                  ? "리뷰를 여기에 작성해주세요."
+                  : "로그인 후 리뷰를 작성할 수 있습니다."
+              }
               value={reviewContent}
               onChange={(e) => setReviewContent(e.target.value)}
+              disabled={!isLogin}
             />
           </div>
 
@@ -200,6 +220,7 @@ export default function RestaurantDetailPage() {
             className="cursor-pointer"
             size="icon"
             onClick={handleReviewSubmit}
+            disabled={!isLogin}
           >
             <SendIcon />
           </Button>
