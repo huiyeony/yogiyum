@@ -23,21 +23,6 @@ export const AuthForm = ({ type, onSubmit }: Props) => {
         }}
         className="space-y-4"
       >
-        {/* <Input
-          placeholder="이메일"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border-2 border-red-300"
-        />
-        <Input
-          placeholder="비밀번호"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border-2 border-red-300"
-        /> */}
-
         <Input
           placeholder="이메일"
           type="email"
