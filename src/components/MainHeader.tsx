@@ -23,7 +23,7 @@ export default function MainHeader() {
 
         <Link to="/">
           <h1
-            className="text-2xl sm:text-3xl font-Jua text-[#2c3e50] transition-all duration-300 ease-in-out 
+            className="text-2xl sm:text-5xl font-[Dongle] text-[#2c3e50] transition-all duration-300 ease-in-out 
                    hover:text-[#ff7043] hover:-translate-y-1 hover:scale-105 hover:tracking-wide"
           >
             요기얌

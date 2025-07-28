@@ -1,3 +1,8 @@
+@import url("https://webfontworld.github.io/gmarket/GmarketSans.css");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Dongle&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap");
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
