@@ -8,13 +8,13 @@ export interface Restaurant {
   thumbnailUrl: URL;
 
   /// 위도
-  latitude: number;
+  latitude: string;
 
   /// (도로명) 주소
-  address: number;
+  address: string;
 
   /// 경도
-  longitude: number;
+  longitude: string;
 
   /// 연락처
   telephone: string;

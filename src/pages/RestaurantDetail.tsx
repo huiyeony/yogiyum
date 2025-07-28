@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Menu } from "@/entities/menu";
 import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
 import type { Review } from "@/entities/review";
+import staticMapUrl from "@/lib/static_map";
 import supabase from "@/lib/supabase";
 import { SendIcon, Star } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -185,7 +186,15 @@ export default function RestaurantDetailPage() {
       </header>
       <div className="flex flex-col gap-4">
         {/* 썸네일 영역 */}
-        <img className="w-full aspect-video rounded-md border" />
+        {restaurant && (
+          <img
+            className="w-full aspect-video rounded-md border"
+            src={staticMapUrl(
+              restaurant.latitude,
+              restaurant.longitude,
+            ).toString()}
+          />
+        )}
         {/* 상세 정보 영역 */}
         <div className="w-full flex flex-col gap-2">
           <dl className="flex flex-row gap-6 text-right">
