@@ -1,10 +1,12 @@
+import MenuCard from "@/components/MenuCard";
+import MenuCardSection from "@/components/MenuCardSection";
 import RatingStar from "@/components/RatingStar";
 import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import ReviewCard from "@/components/ReviewCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
 import { Textarea } from "@/components/ui/textarea";
+import type { Menu } from "@/entities/menu";
 import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
 import type { Review } from "@/entities/review";
 import supabase from "@/lib/supabase";
@@ -28,6 +30,7 @@ export default function RestaurantDetailPage() {
   const { id } = useParams();
   const [restaurant, setRestaurant] = useState<RestaurantWithExtendInfo>();
   const [reviews, setReviews] = useState<ReviewWithNickname[]>();
+  const [menus, setMenus] = useState<Menu[]>();
   const [reviewRating, setReviewRating] = useState<number>(0);
   const [reviewContent, setReviewContent] = useState<string>("");
   const [isLogin, setIsLogin] = useState<boolean>(false);
@@ -86,6 +89,29 @@ export default function RestaurantDetailPage() {
       });
   };
 
+  const getMenus = () => {
+    supabase
+      .from("menus")
+      .select("*")
+      .eq("restaurant_id", id)
+      .then(({ data }) => {
+        if (!data) return;
+
+        const newData = data.map((menu) => {
+          return {
+            id: menu.id,
+            restaurantId: menu.restaurant_id,
+            name: menu.menu,
+            price: menu.menu_price,
+            imageUrl: menu.menu_img ? new URL(menu.menu_img) : undefined,
+            description: menu.menu_desc,
+          };
+        });
+
+        setMenus(newData);
+      });
+  };
+
   const getReviews = () => {
     supabase
       .from("reviews")
@@ -114,6 +140,7 @@ export default function RestaurantDetailPage() {
 
   useEffect(() => {
     getRestaurantInfo();
+    getMenus();
     getReviews();
   }, [id]);
 
@@ -194,6 +221,9 @@ export default function RestaurantDetailPage() {
           </dl>
         </div>
       </div>
+
+      {menus && menus.length > 0 && <MenuCardSection menus={menus} />}
+
       {/* 리뷰 부분 */}
       <div className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">리뷰</h2>
