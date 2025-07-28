@@ -1,6 +1,6 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
-import { emojiList } from "@/constants/emojiList";
-import { useState } from "react";
+
+import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import EmojiButton from "@/components/EmojiButton";
 import supabase from "@/lib/supabase";
@@ -28,28 +28,31 @@ const TempPage = () => {
     }
   };
 
-  // 로그아웃 함수
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setLoading(false);
-    navigate("/login");
-  };
+  // login일 경우 자동 이동
+  useEffect(() => {
+    if (from === "login") {
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 1500); // 1.5초 후 이동
+      return () => clearTimeout(timer);
+    }
+  }, [from, navigate]);
 
   //표시할 메세지
   const message =
     from === "login" ? (
-      <div className="mt-5 font-jua">
+      <div className="mt-5 font-[jua]">
         로그인 완료 ✅
-        <br /> <p className="text-red-600">{userEmail}</p>로 로그인 되었습니다!
+        <br /> <p className="text-red-600 font-[jua]">{userEmail}</p>로 로그인
+        되었습니다!
       </div>
     ) : from === "signup" ? (
-      <div className="mt-5 font-jua">
+      <div className="mt-5 font-[jua]">
         <p className="text-red-600">{userEmail}</p>로 인증 메일이
         발송되었습니다. <br />
         <br />
         <button
-          className="hover:underline hover:text-red-500 font-jua"
+          className="hover:underline hover:text-red-500 font-[jua]"
           onClick={resendVerificationEmail}
         >
           이메일이 오지 않았나요?
@@ -73,23 +76,12 @@ const TempPage = () => {
       <div className="mb-8 text-center space-y-2">
         <EmojiButton />
         <Link to="/">
-          <h1 className="text-3xl font-jua text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
+          <h1 className="text-7xl font-[Dongle] text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
             요기얌
           </h1>
         </Link>
 
         <div>{message}</div>
-
-        {user && from !== "signup" && (
-          <div className="mt-6">
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-400 hover:bg-red-600 transition-colors duration-200"
-            >
-              로그아웃
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

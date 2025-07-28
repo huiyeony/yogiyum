@@ -49,13 +49,13 @@ const VerificationPage = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
       <div className="mb-8 text-center space-y-2">
         <EmojiButton />
-        <h1 className="text-4xl font-gowun font-bold text-foreground">
+        <h1 className="text-7l font-[Dongle] font-bold text-foreground">
           요기얌
         </h1>
-        <div className="mt-5 text-xl font-jua">회원 가입 완료✅</div>
+        <div className="mt-5 text-xl font-[jua]">회원 가입 완료✅</div>
       </div>
       <div>
-        <h1 className="text-2xl font-semibold text-center font-gowun pb-8">
+        <h1 className="text-2xl font-semibold text-center font-[jua] pb-8">
           닉네임을 입력해주세요
         </h1>
         <div className="flex flex-row gap-3">
@@ -66,7 +66,7 @@ const VerificationPage = () => {
           />
           <Button
             type="submit"
-            className="font-gowun w-1/4 bg-red-400 hover:bg-red-600 transition-colors duration-200"
+            className="font-[jua] w-1/4 bg-red-400 hover:bg-red-600 transition-colors duration-200"
             onClick={handleSubmit}
           >
             등록
