@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
-import RestaurantCard from "@/components/RestaurantCard";
-import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
-import supabase from "@/lib/supabase";
-import { Input } from "@/components/ui/input";
-import SignupCouponBanner from "@/components/banner";
-import CategoryModal from "@/components/ui/categorymodal";
-import { useSearchParams } from "react-router-dom";
+
+import { useEffect, useState } from 'react';
+import RestaurantCard from '@/components/RestaurantCard';
+import { RestaurantCategory, type Restaurant } from '@/entities/restaurant';
+import supabase from '@/lib/supabase';
+import { Input } from '@/components/ui/input';
+import SignupCouponBanner from '@/components/banner';
+import CategoryModal from '@/components/ui/categorymodal';
+import { useSearchParams } from 'react-router-dom';
+
 const categoryMap: Record<string, string> = {
   한식: "Korean",
   중식: "Chinese",
@@ -42,14 +44,16 @@ export default function MainPage() {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [searchValue, setSearchValue] = useState(searchParams.get("q") ?? "");
+
+  const [searchValue, setSearchValue] = useState(searchParams.get('q') ?? '');
   const [selectedCategories, setSelectedCategories] = useState(
-    searchParams.get("category")
-      ? searchParams.get("category")!.split(",")
-      : ["전체"]
+    searchParams.get('category')
+      ? searchParams.get('category')!.split(',')
+      : ['전체']
   );
   const [sortType, setSortType] = useState<SortType>(
-    (searchParams.get("sort") as SortType) ?? "liked_count"
+    (searchParams.get('sort') as SortType) ?? 'liked_count'
+
   );
 
   const search = async () => {
@@ -117,11 +121,13 @@ export default function MainPage() {
 
     if (searchValue) params.q = searchValue;
     if (
-      !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
+
+      !(selectedCategories.length === 1 && selectedCategories[0] === '전체')
     ) {
-      params.category = selectedCategories.join(",");
+      params.category = selectedCategories.join(',');
     }
-    if (sortType !== "liked_count") {
+    if (sortType !== 'liked_count') {
+
       params.sort = sortType;
     }
 
