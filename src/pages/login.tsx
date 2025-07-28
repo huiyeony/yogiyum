@@ -41,7 +41,7 @@ const LoginPage = () => {
         <div className="mb-8 text-center space-y-2">
           <EmojiButton />
 
-          <Link to="/">
+          <Link to="/Main">
             <h1 className="text-7xl font-jua text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out font-[Dongle]">
               요기얌
             </h1>

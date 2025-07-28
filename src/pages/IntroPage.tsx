@@ -9,7 +9,7 @@ export default function IntroPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("/Main");
-    }, 3500);
+    }, 3000);
     return () => clearTimeout(timer);
   }, [navigate]);
 
