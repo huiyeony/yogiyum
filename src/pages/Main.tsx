@@ -5,6 +5,7 @@ import supabase from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import SignupCouponBanner from "@/components/banner";
 import CategoryModal from "@/components/ui/categorymodal";
+import { useSearchParams } from "react-router-dom";
 const categoryMap: Record<string, string> = {
   한식: "Korean",
   중식: "Chinese",
@@ -28,18 +29,28 @@ interface RestaurantWithStats extends Restaurant {
 type SortType = "liked_count" | "review_count" | "average_rating";
 
 export default function MainPage() {
-  const [searchValue, setSearchValue] = useState<string>("");
   const [restaurants, setRestaurants] = useState<RestaurantWithStats[] | null>(
     null
   );
-  const [selectedCategories, setSelectedCategories] = useState(["전체"]);
+
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   const [likedList, setLikedList] = useState<
     { restaurant_id: number; liked: boolean }[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [sortType, setSortType] = useState<SortType>("liked_count");
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [searchValue, setSearchValue] = useState(searchParams.get("q") ?? "");
+  const [selectedCategories, setSelectedCategories] = useState(
+    searchParams.get("category")
+      ? searchParams.get("category")!.split(",")
+      : ["전체"]
+  );
+  const [sortType, setSortType] = useState<SortType>(
+    (searchParams.get("sort") as SortType) ?? "liked_count"
+  );
 
   const search = async () => {
     setIsLoading(true);
@@ -51,7 +62,7 @@ export default function MainPage() {
       .order(sortType, { ascending: false })
       .ilike("name", `%${searchValue}%`);
 
-    //  '전체'가 아닌 경우 category 필터링 추가
+    // ✅ '전체'가 아닌 경우 category 필터링 추가
     if (
       !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
     ) {
@@ -101,11 +112,24 @@ export default function MainPage() {
         setLikedList(res.data || []);
       });
   };
-
   useEffect(() => {
+    const params: any = {};
+
+    if (searchValue) params.q = searchValue;
+    if (
+      !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
+    ) {
+      params.category = selectedCategories.join(",");
+    }
+    if (sortType !== "liked_count") {
+      params.sort = sortType;
+    }
+
+    setSearchParams(params);
+
     search();
     likedSearch();
-  }, [sortType, selectedCategories]);
+  }, [searchValue, selectedCategories, sortType]);
 
   return (
     <>
@@ -129,7 +153,7 @@ export default function MainPage() {
         </div>
 
         <div className="flex gap-4 items-center mb-4">
-          <SortSelector onChange={setSortType} />
+          <SortSelector onChange={setSortType} value={sortType} />
 
           <button
             onClick={() => setIsCategoryModalOpen(true)}
@@ -187,13 +211,13 @@ export default function MainPage() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center text-center py-24 bg-[#fffaf6] rounded-lg mt-10">
+            <div className="flex flex-col items-center justify-center text-center py-24 bg-[#fff2ed] rounded-lg mt-10">
               <img
                 src="/no_results.png"
                 alt="검색 결과 없음"
                 className="w-48 h-48 object-contain mb-6 opacity-70"
               />
-              <p className="text-2xl text-[#e4573d] font-[jua]">
+              <p className="text-2xl text-[#e4573d] font-jua">
                 검색 결과가 없습니다 😢
               </p>
             </div>
@@ -204,9 +228,15 @@ export default function MainPage() {
   );
 }
 
-function SortSelector({ onChange }: { onChange: (value: SortType) => void }) {
+function SortSelector({
+  onChange,
+  value,
+}: {
+  onChange: (value: SortType) => void;
+  value: SortType;
+}) {
   return (
-    <Select onValueChange={onChange} defaultValue="liked_count">
+    <Select onValueChange={onChange} value={value}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="정렬 방식" />
       </SelectTrigger>
