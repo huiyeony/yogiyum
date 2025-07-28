@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import RestaurantDetailPage from "./pages/RestaurantDetail";
 import MyPage from "./pages/mypage";
 import EditProfile from "./pages/edit-profile";
+import LikedRestaurantsPage from "./pages/LikedRestaurantsPage";
 
 const App = () => {
   return (
@@ -24,6 +25,10 @@ const App = () => {
         <Route path="/Main" element={<MainPage />} />
         <Route path="/intro" element={<IntroPage />} />
         <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
+        <Route
+          path="/LikedRestaurantsPage"
+          element={<LikedRestaurantsPage />}
+        />
 
         <Route path="/temp" element={<TempPage />} />
         <Route path="/verification" element={<VerificationPage />} />

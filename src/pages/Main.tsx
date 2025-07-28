@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import RestaurantCard from '@/components/RestaurantCard';
-import { RestaurantCategory, type Restaurant } from '@/entities/restaurant';
-import supabase from '@/lib/supabase';
-import { Input } from '@/components/ui/input';
-import SignupCouponBanner from '@/components/banner';
-import CategoryModal from '@/components/ui/categorymodal';
+import { useEffect, useState } from "react";
+import RestaurantCard from "@/components/RestaurantCard";
+import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
+import supabase from "@/lib/supabase";
+import { Input } from "@/components/ui/input";
+import SignupCouponBanner from "@/components/banner";
+import CategoryModal from "@/components/ui/categorymodal";
 const categoryMap: Record<string, string> = {
-  한식: 'Korean',
-  중식: 'Chinese',
-  일식: 'Japanese',
-  양식: 'Western',
-  카페: 'Cafe',
+  한식: "Korean",
+  중식: "Chinese",
+  일식: "Japanese",
+  양식: "Western",
+  카페: "Cafe",
 };
 import {
   Select,
@@ -18,51 +18,51 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 interface RestaurantWithStats extends Restaurant {
   averageRating: number;
   likedUserCount: number;
 }
 
-type SortType = 'liked_count' | 'review_count' | 'average_rating';
+type SortType = "liked_count" | "review_count" | "average_rating";
 
 export default function MainPage() {
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [searchValue, setSearchValue] = useState<string>("");
   const [restaurants, setRestaurants] = useState<RestaurantWithStats[] | null>(
     null
   );
-  const [selectedCategories, setSelectedCategories] = useState(['전체']);
+  const [selectedCategories, setSelectedCategories] = useState(["전체"]);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   const [likedList, setLikedList] = useState<
     { restaurant_id: number; liked: boolean }[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [sortType, setSortType] = useState<SortType>('liked_count');
+  const [sortType, setSortType] = useState<SortType>("liked_count");
 
   const search = async () => {
     setIsLoading(true);
 
     // 기본 쿼리 구성
     let query = supabase
-      .from('restaurants_with_stats')
-      .select('*')
+      .from("restaurants_with_stats")
+      .select("*")
       .order(sortType, { ascending: false })
-      .ilike('name', `%${searchValue}%`);
+      .ilike("name", `%${searchValue}%`);
 
-    // ✅ '전체'가 아닌 경우 category 필터링 추가
+    //  '전체'가 아닌 경우 category 필터링 추가
     if (
-      !(selectedCategories.length === 1 && selectedCategories[0] === '전체')
+      !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
     ) {
       const mappedCategories = selectedCategories.map(
         (cat) => categoryMap[cat]
       );
-      query = query.in('category', mappedCategories);
+      query = query.in("category", mappedCategories);
     }
 
     // 검색어 없으면 20개 제한
-    if (searchValue === '') {
+    if (searchValue === "") {
       query = query.limit(20);
     }
 
@@ -76,12 +76,12 @@ export default function MainPage() {
     const newData: RestaurantWithStats[] = data.map((item) => ({
       id: item.id,
       name: item.name,
-      thumbnailUrl: new URL('https://picsum.photos/500'),
+      thumbnailUrl: new URL("https://picsum.photos/500"),
       latitude: item.latitude,
       longitude: item.longitude,
       address: item.address,
       telephone: item.phone,
-      openingHour: '',
+      openingHour: "",
       category: item.category,
       averageRating: item.average_rating,
       likedUserCount: item.liked_count,
@@ -94,9 +94,9 @@ export default function MainPage() {
   const likedSearch = async () => {
     const session = await supabase.auth.getSession();
     await supabase
-      .from('liked')
-      .select('*')
-      .eq('user_id', session.data.session?.user.id)
+      .from("liked")
+      .select("*")
+      .eq("user_id", session.data.session?.user.id)
       .then((res) => {
         setLikedList(res.data || []);
       });
@@ -121,7 +121,7 @@ export default function MainPage() {
               setSearchValue(e.target.value);
             }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 search();
               }
             }}
@@ -133,20 +133,22 @@ export default function MainPage() {
 
           <button
             onClick={() => setIsCategoryModalOpen(true)}
-            className="h-9 px-3 py-2 text-sm rounded-md border border-input bg-transparent text-foreground outline-none flex items-center justify-between">
-            {selectedCategories.length === 1 && selectedCategories[0] === '전체'
-              ? '카테고리 전체'
-              : `카테고리: ${selectedCategories.slice(0, 2).join(', ')}${
+            className="h-9 px-3 py-2 text-sm rounded-md border border-input bg-transparent text-foreground outline-none flex items-center justify-between"
+          >
+            {selectedCategories.length === 1 && selectedCategories[0] === "전체"
+              ? "카테고리 전체"
+              : `카테고리: ${selectedCategories.slice(0, 2).join(", ")}${
                   selectedCategories.length > 2
                     ? ` 외 ${selectedCategories.length - 2}개`
-                    : ''
+                    : ""
                 }`}
           </button>
         </div>
         {isCategoryModalOpen && (
           <div
             className="fixed inset-0 bg-black/30 z-[1000] flex justify-center items-end"
-            onClick={() => setIsCategoryModalOpen(false)}>
+            onClick={() => setIsCategoryModalOpen(false)}
+          >
             <CategoryModal
               selected={selectedCategories}
               onChange={setSelectedCategories}
@@ -185,13 +187,13 @@ export default function MainPage() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center text-center py-24 bg-[#fff2ed] rounded-lg mt-10">
+            <div className="flex flex-col items-center justify-center text-center py-24 bg-[#fffaf6] rounded-lg mt-10">
               <img
                 src="/no_results.png"
                 alt="검색 결과 없음"
                 className="w-48 h-48 object-contain mb-6 opacity-70"
               />
-              <p className="text-2xl text-[#e4573d] font-jua">
+              <p className="text-2xl text-[#e4573d] font-[jua]">
                 검색 결과가 없습니다 😢
               </p>
             </div>
