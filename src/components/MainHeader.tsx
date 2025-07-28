@@ -8,14 +8,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import supabase from "@/lib/supabase";
-import { ShoppingBagIcon } from "lucide-react";
+import { LogOut, ShoppingBagIcon } from "lucide-react";
 import EmojiButton from "./EmojiButton";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function MainHeader() {
   return (
     <header
-      className="flex justify-between items-center w-full px-6 py-3 bg-[#fffaf6]]
-             sticky top-0 z-50 mb-2"
+      className="flex justify-between items-center w-full px-6 py-3 
+             sticky top-0 z-50 mb-2 bg-orange-200"
     >
       {/* 왼쪽 로고 */}
       <div className="flex items-center gap-2">
@@ -46,31 +47,19 @@ export default function MainHeader() {
 }
 
 function UserButton() {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, loading, setLoading, setUser, logout } = useAuth();
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth
-      .getSession()
-      .then((res) => {
-        if (!res.data.session) return;
-        const uid = res.data.session.user.id;
-        return supabase
-          .from("users")
-          .select()
-          .eq("user_internal_id", uid)
-          .single();
-      })
-      .then(({ data }) => {
-        if (!data) return;
-        setUser({
-          id: data.id,
-          nickname: data.nickname,
-          email: "asdf",
-          registerDate: data.created_at,
-        });
-      });
-  }, []);
+    if (loading) return;
+
+    if (user) {
+      console.log("현재 로그인한 사용자:", user.nickname);
+    } else {
+      console.log("로그인 안 됨");
+    }
+  }, [user, loading]);
 
   if (user) {
     return (
@@ -87,8 +76,7 @@ function UserButton() {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={async () => {
-              await supabase.auth.signOut();
-              setUser(null);
+              await logout();
               navigate("/");
             }}
             className="hover:bg-[#fff0eb] hover:pl-4 text-[#e4573d] transition-all duration-200"
