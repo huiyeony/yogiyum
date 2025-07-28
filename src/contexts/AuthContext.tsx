@@ -5,6 +5,7 @@ import supabase from "@/lib/supabase";
 //   DB에 저장된 유저 정보 타입
 export interface AppUser {
   id: number;
+  user_internal_id: string;
   nickname: string;
   email: string;
   registerDate: string;
@@ -58,6 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } else if (data) {
       setUser({
         id: data.id,
+        user_internal_id: data.user_internal_id,
         nickname: data.nickname,
         email: data.email,
         registerDate: data.created_at,
@@ -89,6 +91,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    setLoading(false);
   };
 
   return (

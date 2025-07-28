@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Heart } from "lucide-react";
-import { Card } from "./ui/card";
+import { Card } from "@/components/ui/card";
 import type { Restaurant } from "@/entities/restaurant";
-import RestaurantCategoryBadge from "./RestaurantCategoryBadge";
-import RatingStar from "./RatingStar";
+import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
+import RatingStar from "@/components/RatingStar";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
 
 interface Props {
   readonly restaurant: Restaurant;
-  readonly rating: number;
+  readonly rating?: number;
   readonly likedCount: number;
   readonly isLiked: boolean;
   onSearch: () => void;
@@ -69,7 +69,7 @@ export default function RestaurantCard({
           />
         )}
         <img
-          src={restaurant.thumbnailUrl.toString()}
+          src={restaurant.thumbnailUrl?.toString() || ""}
           alt={restaurant.name}
           onLoad={() => setImageLoaded(true)}
           onError={() => setImageLoaded(true)}
@@ -88,8 +88,10 @@ export default function RestaurantCard({
         </Link>
 
         <div className="flex items-center gap-1 text-sm text-gray-500">
-          <RatingStar rating={rating} digit={1} />
-          <span className="text-xs">({rating.toFixed(1)})</span>
+          <RatingStar rating={rating ?? 0} digit={1} />
+          <span className="text-xs">
+            ({typeof rating === "number" ? rating.toFixed(1) : "평점 없음"})
+          </span>
         </div>
 
         <RestaurantCategoryBadge category={restaurant.category} />
