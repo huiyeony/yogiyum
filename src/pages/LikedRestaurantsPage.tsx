@@ -95,7 +95,7 @@ export default function LikedRestaurantsPage() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-wrap gap-3 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 justify-center">
           {restaurants.map((restaurant, idx) => (
             <RestaurantCard
               key={idx}

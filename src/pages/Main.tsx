@@ -272,8 +272,10 @@ export default function MainPage() {
               </p>
             </div>
           ) : restaurants && restaurants.length > 0 ? (
+
             // ✅ 결과 리스트
             <div className="flex flex-wrap gap-3">
+
               {restaurants.map((item, idx) => (
                 <RestaurantCard
                   key={idx}
