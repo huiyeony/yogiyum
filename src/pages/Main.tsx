@@ -1,5 +1,5 @@
 // ✅ 기본 import
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // ✅ 컴포넌트 import
@@ -14,11 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 
 // ✅ 데이터 및 타입 import
 import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
 import supabase from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
 
 // ✅ 한글 카테고리 → 영문 카테고리 매핑
 const categoryMap: Record<string, string> = {
@@ -51,28 +51,46 @@ const categoryStyleMap: Record<
   빵집: { emoji: "🥐", label: "빵집", color: "bg-gray-400" },
 };
 
+const DEFAULT_PAGE_SIZE = 20;
+
 // ✅ 메인 페이지 컴포넌트
 export default function MainPage() {
   // 🔧 상태 정의
-  const [restaurants, setRestaurants] = useState<RestaurantWithStats[] | null>(
-    null
-  );
+  const [restaurants, setRestaurants] = useState<RestaurantWithStats[]>([]);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [likedList, setLikedList] = useState<
     { restaurant_id: number; liked: boolean }[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState(searchParams.get("q") ?? "");
   const [selectedCategories, setSelectedCategories] = useState(
     searchParams.get("category")
       ? searchParams.get("category")!.split(",")
-      : ["전체"]
+      : ["전체"],
   );
   const [sortType, setSortType] = useState<SortType>(
-    (searchParams.get("sort") as SortType) ?? "liked_count"
+    (searchParams.get("sort") as SortType) ?? "liked_count",
   );
+  const [page, setPage] = useState<number>(1);
+  const [maxPage, setMaxPage] = useState<number>(1);
+  const lastItemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setPage((prev) => prev + 1);
+      }
+    });
+
+    if (lastItemRef.current) {
+      observer.observe(lastItemRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [restaurants]);
 
   // 🔍 식당 검색 함수
   const search = async () => {
@@ -82,21 +100,18 @@ export default function MainPage() {
       .from("restaurants_with_stats")
       .select("*")
       .order(sortType, { ascending: false })
-      .ilike("name", `%${searchValue}%`);
+      .order("id")
+      .ilike("name", `%${searchValue}%`)
+      .range((page - 1) * DEFAULT_PAGE_SIZE, page * DEFAULT_PAGE_SIZE - 1);
 
     // ✅ 전체가 아닐 경우 → 카테고리 필터링
     if (
       !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
     ) {
       const mappedCategories = selectedCategories.map(
-        (cat) => categoryMap[cat]
+        (cat) => categoryMap[cat],
       );
       query = query.in("category", mappedCategories);
-    }
-
-    // 검색어 없으면 20개 제한
-    if (searchValue === "") {
-      query = query.limit(20);
     }
 
     const { data } = await query;
@@ -136,6 +151,56 @@ export default function MainPage() {
         setLikedList(res.data || []);
       });
   };
+
+  // 최대 페이지 수 구하기
+  useEffect(() => {
+    supabase
+      .from("restaurants_with_stats")
+      .select("id", { count: "exact", head: true })
+      .then((res) => {
+        setMaxPage(Math.ceil(res.count ?? 0 / DEFAULT_PAGE_SIZE));
+      });
+  }, []);
+
+  // 페이지 넘겨졌을 경우
+  useEffect(() => {
+    if (page >= maxPage) return;
+
+    let query = supabase
+      .from("restaurants_with_stats")
+      .select("*")
+      .order(sortType, { ascending: false })
+      .order("id")
+      .range((page - 1) * DEFAULT_PAGE_SIZE, page * DEFAULT_PAGE_SIZE - 1);
+
+    if (
+      !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
+    ) {
+      const mappedCategories = selectedCategories.map(
+        (cat) => categoryMap[cat],
+      );
+      query = query.in("category", mappedCategories);
+    }
+
+    query.then((res) => {
+      if (!res.data) return;
+      const newData = res.data.map((item) => ({
+        id: item.id,
+        name: item.name,
+        thumbnailUrl: new URL(item.thumbnail_url ?? "https://example.com/"),
+        latitude: item.latitude,
+        longitude: item.longitude,
+        address: item.address,
+        telephone: item.phone,
+        openingHour: "",
+        category: item.category,
+        averageRating: item.average_rating,
+        likedUserCount: item.liked_count,
+      }));
+
+      setRestaurants([...restaurants!, ...newData]);
+    });
+  }, [page]);
 
   // 🌀 의존성 변화 시 검색 실행
   useEffect(() => {
@@ -214,17 +279,17 @@ export default function MainPage() {
                   onClick={() => {
                     if (!isDisabled) {
                       setSelectedCategories((prev) =>
-                        prev.filter((cat) => cat !== category)
+                        prev.filter((cat) => cat !== category),
                       );
                     }
                   }}
                   className={`
     flex flex-col items-center justify-center w-16 h-20 rounded-lg cursor-pointer transition-all duration-200 ease-in-out
     ${color} ${
-                    isDisabled
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:scale-105 hover:shadow-md"
-                  }
+      isDisabled
+        ? "opacity-50 cursor-not-allowed"
+        : "hover:scale-105 hover:shadow-md"
+    }
   `}
                 >
                   {/* 이모지 (흰색 원 배경 안에 표시) */}
@@ -272,22 +337,27 @@ export default function MainPage() {
               </p>
             </div>
           ) : restaurants && restaurants.length > 0 ? (
-
             // ✅ 결과 리스트
             <div className="flex flex-wrap gap-3">
-
-              {restaurants.map((item, idx) => (
-                <RestaurantCard
-                  key={idx}
-                  restaurant={item}
-                  rating={item.averageRating}
-                  likedCount={item.likedUserCount}
-                  isLiked={likedList.some(
-                    (liked) => liked.restaurant_id === item.id
-                  )}
-                  onSearch={likedSearch}
-                />
-              ))}
+              {restaurants.map((item, idx) => {
+                return (
+                  <>
+                    <RestaurantCard
+                      key={idx}
+                      restaurant={item}
+                      rating={item.averageRating}
+                      likedCount={item.likedUserCount}
+                      isLiked={likedList.some(
+                        (liked) => liked.restaurant_id === item.id,
+                      )}
+                      onSearch={likedSearch}
+                    />
+                    {idx === restaurants.length - 1 && (
+                      <div ref={lastItemRef} />
+                    )}
+                  </>
+                );
+              })}
             </div>
           ) : (
             // ❌ 검색 결과 없음
