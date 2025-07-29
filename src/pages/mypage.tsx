@@ -140,15 +140,19 @@ function MyPage() {
         {/* 리뷰 섹션 */}
         <div className="flex justify-between items-center">
           <p className="text-xl font-[jua]">나의 리뷰</p>
-          {hasMore && (
+
+          {
             <button
               className="text-sm text-neutral-500 hover:underline"
               onClick={() => setShowAll((prev) => !prev)}
             >
               {toggleLabel}
             </button>
-          )}
+          }
         </div>
+        <p className="text-sm text-gray-500 mb-6 font-[jua]">
+          내가 쓴 리뷰를 수정할 수 있어요
+        </p>
 
         <div className="min-h-[760px] space-y-4">
           {displayedComments.length > 0 ? (
