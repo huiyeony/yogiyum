@@ -88,7 +88,7 @@ export default function RestaurantCard({
         </Link>
 
         <div className="flex items-center gap-1 text-sm text-gray-500">
-          <RatingStar rating={rating ?? 0} digit={1} />
+          <RatingStar rating={rating ?? 0} digit={1} size={15} />
           <span className="text-xs">
             ({typeof rating === "number" ? rating.toFixed(1) : "평점 없음"})
           </span>

@@ -24,24 +24,30 @@ export default function ReviewCard({
   const [editedComment, setEditedComment] = useState(review.content);
 
   return (
-    <Card className="flex flex-col gap-4 bg-white rounded-md text-black p-4">
-      <header className="flex flex-row justify-between items-center">
-        <div className="flex flex-row gap-2 items-center">
-          <h3 className="text-lg font-bold">{title}</h3>
-          <RatingStar rating={review.rating} digit={0} />
+    <Card className="flex flex-col gap-3 bg-white border rounded-lg p-4 text-sm shadow-sm">
+      {/* 상단 - 제목 + 별점 + 버튼 */}
+      <header className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-sm font-semibold">{title}</h3>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-neutral-400">내가 준 평점</span>
+            <RatingStar rating={review.rating} digit={1} size={16} />
+          </div>
         </div>
 
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 self-end sm:self-auto">
           <Button
             size="icon"
+            className="w-6 h-6"
             variant="secondary"
             onClick={() => setIsEditing(true)}
           >
-            <PencilIcon />
+            <PencilIcon size={12} />
           </Button>
 
           <Button
             size="icon"
+            className="w-6 h-6"
             variant="destructive"
             onClick={async () => {
               const confirmDelete = window.confirm("정말 삭제하시겠습니까?");
@@ -59,37 +65,42 @@ export default function ReviewCard({
               }
             }}
           >
-            <Trash2Icon />
+            <Trash2Icon size={12} />
           </Button>
         </div>
       </header>
 
-      <div className="w-full text-start">
+      {/* 본문 */}
+      <div className="text-neutral-700 text-sm text-left">
         {isEditing ? (
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
             <Textarea
               value={editedComment}
               onChange={(e) => setEditedComment(e.target.value)}
+              className="text-sm"
             />
-            <Button
-              className="bg-orange-500 hover:bg-orange-300 text-white"
-              onClick={async () => {
-                const { error } = await supabase
-                  .from("reviews")
-                  .update({ content: editedComment })
-                  .eq("id", review.id);
+            <div className="flex justify-end">
+              <Button
+                size="sm"
+                className="bg-orange-500 hover:bg-orange-400 text-white px-3 py-1"
+                onClick={async () => {
+                  const { error } = await supabase
+                    .from("reviews")
+                    .update({ content: editedComment })
+                    .eq("id", review.id);
 
-                if (!error) {
-                  onUpdate(editedComment);
-                  setIsEditing(false);
-                }
-              }}
-            >
-              저장
-            </Button>
+                  if (!error) {
+                    onUpdate(editedComment);
+                    setIsEditing(false);
+                  }
+                }}
+              >
+                저장
+              </Button>
+            </div>
           </div>
         ) : (
-          <p>{review.content}</p>
+          <p className="text-xs">{review.content}</p>
         )}
       </div>
     </Card>
