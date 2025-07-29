@@ -200,7 +200,7 @@ export default function MainPage() {
               </p>
             </div>
           ) : restaurants && restaurants.length > 0 ? (
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {restaurants.map((item, idx) => (
                 <RestaurantCard
                   key={idx}

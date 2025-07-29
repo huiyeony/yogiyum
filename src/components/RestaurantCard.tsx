@@ -43,7 +43,7 @@ export default function RestaurantCard({
   };
 
   return (
-    <Card className="w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(50%-0.4rem)] relative flex flex-col rounded-xl overflow-hidden bg-[#fffaf6] transition-transform duration-100 hover:scale-[1.02] p-3 gap-3 ">
+    <Card className="w-full relative flex flex-col rounded-xl overflow-hidden bg-[#fffaf6] transition-transform duration-100 hover:scale-[1.02] p-3 gap-3 ">
       {/* 인기 강조 배경 배지 */}
       {isPopular && (
         <div className="absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-extrabold rounded-md shadow-lg z-20 ">
