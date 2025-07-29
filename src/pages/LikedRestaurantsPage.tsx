@@ -69,7 +69,10 @@ export default function LikedRestaurantsPage() {
 
   return (
     <main className="bg-[#fffaf6] min-h-screen py-6 px-4">
-      <h1 className="text-3xl font-[jua] mb-6 text-orange-500">❤️ 찜 리스트</h1>
+      <h1 className="text-3xl font-[jua] mb-1 text-orange-500">❤️ 찜 리스트</h1>
+      <p className="text-sm text-gray-500 mb-6 font-[jua]">
+        내가 찜한 식당들의 목록을 확인할 수 있어요
+      </p>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-12">
