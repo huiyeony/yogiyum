@@ -51,6 +51,9 @@ export enum RestaurantCategory {
   /// 뷔페
   Buffet = "Buffet",
 
+  /// 빵집
+  Bakery = "Bakery",
+
   /// 기타
   Etc = "Etc",
 }
