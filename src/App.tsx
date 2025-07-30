@@ -22,13 +22,10 @@ const App = () => {
       {/* 인트로 페이지 추가 */}
       <Route path="/" element={<IntroPage />} />
       <Route element={<Layout />}>
-        <Route path="/Main" element={<MainPage />} />
+        <Route path="/main" element={<MainPage />} />
         <Route path="/intro" element={<IntroPage />} />
         <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
-        <Route
-          path="/LikedRestaurantsPage"
-          element={<LikedRestaurantsPage />}
-        />
+        <Route path="/liked" element={<LikedRestaurantsPage />} />
 
         <Route path="/temp" element={<TempPage />} />
         <Route path="/verification" element={<VerificationPage />} />

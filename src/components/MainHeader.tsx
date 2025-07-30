@@ -14,7 +14,7 @@ export default function MainHeader() {
   const navigate = useNavigate();
 
   const handleLikeClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     if (!user) {
       e.preventDefault(); // 링크 이동 막기
@@ -28,7 +28,7 @@ export default function MainHeader() {
     >
       {/* 왼쪽 로고 */}
       <div className="flex items-center gap-2">
-        <Link to="/Main">
+        <Link to="/main">
           <h1
             className="text-3xl  font-['Gowun_Dodum'] text-[#2c3e50] transition-all duration-300 ease-in-out
                    hover:text-[#ff7043] hover:-translate-y-1 hover:scale-105 hover:tracking-wide"
@@ -42,7 +42,7 @@ export default function MainHeader() {
       {/* 오른쪽 아이콘들 */}
       <div className="flex items-center text-[#2c3e50]">
         <Link
-          to="/LikedRestaurantsPage"
+          to="/liked"
           className="hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-['Gowun_Dodum'] text-xm"
           onClick={handleLikeClick}
         >
