@@ -3,7 +3,6 @@ import supabase from "@/lib/supabase";
 import { Link, useNavigate } from "react-router-dom";
 import Fade from "@/components/ShiftPage";
 import EmojiButton from "@/components/EmojiButton";
-import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const LoginPage = () => {
