@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .from("users")
       .select()
       .eq("user_internal_id", uid)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error("🔴 유저 정보 가져오기 실패:", error.message);
