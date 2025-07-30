@@ -142,10 +142,11 @@ export default function SignUpNoEmailVerification() {
   };
 
   const pill = (s: Status) => {
-    if (s === "valid") return <span className="text-green-600">사용가능!</span>;
+    if (s === "valid")
+      return <span className="text-green-600">사용가능 🟢</span>;
     if (s === "checking")
-      return <span className="text-yellow-600">확인중…</span>;
-    return <span className="text-red-600">사용불가</span>;
+      return <span className="text-yellow-600">확인중… ⏳</span>;
+    return <span className="text-red-600">사용불가 🔴</span>;
   };
 
   return (
@@ -168,8 +169,8 @@ export default function SignUpNoEmailVerification() {
 
       <div className="w-full max-w-md space-y-5">
         {/* 이메일 */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
+        <div className="flex items-center justify-end gap-3">
+          <div className="w-[250px]">
             <Input
               type="email"
               placeholder="이메일"
@@ -182,8 +183,8 @@ export default function SignUpNoEmailVerification() {
         </div>
 
         {/* 비밀번호 (>=6자) */}
-        <div className="flex   items-center gap-3">
-          <div className="flex-1">
+        <div className="flex   items-center justify-end gap-3">
+          <div className="w-[250px]">
             <Input
               type="password"
               placeholder="비밀번호 (6자 이상)"
@@ -196,8 +197,8 @@ export default function SignUpNoEmailVerification() {
         </div>
 
         {/* 닉네임 (최대 6자) */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
+        <div className="flex items-center justify-end gap-3">
+          <div className="w-[250px]">
             <Input
               placeholder="닉네임 (최대 6글자)"
               value={nickname}
@@ -214,13 +215,14 @@ export default function SignUpNoEmailVerification() {
           disabled={!enabled}
           onClick={handleSubmit}
           className={[
-            "w-[120px] mt-4 ml-60 font-['Gowun_Dodum'] transition-colors duration-200",
+            "w-[140px] mt-4 ml-51 font-['Gowun_Dodum']",
+            "rounded-xl border transition-colors duration-200 shadow-sm",
             enabled
-              ? "bg-orange-400 hover:bg-orange-500 active:bg-orange-600 text-white"
-              : "bg-zinc-700 text-zinc-300 opacity-90 cursor-not-allowed hover:bg-zinc-700",
+              ? "bg-white text-black border-zinc-300 hover:bg-zinc-50 hover:border-zinc-400 active:bg-zinc-100"
+              : "bg-zinc-800 text-zinc-300 border-zinc-700 cursor-not-allowed hover:bg-zinc-800 hover:border-zinc-700",
           ].join(" ")}
         >
-          회원가입 완료
+          {enabled ? "회원가입 가능 ✅" : "회원가입 불가 ❌"}
         </Button>
       </div>
     </div>
