@@ -9,6 +9,22 @@ const VerificationPage = () => {
   const [nickname, setNickname] = useState("");
   const navigate = useNavigate();
 
+  // ✅ 이메일 인증 링크로 돌아왔을 때 세션 교환
+  useEffect(() => {
+    (async () => {
+      const code = new URLSearchParams(window.location.search).get("code");
+      if (!code) return; // code 없으면 아무 것도 안 함
+
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (error) {
+        console.error("세션 교환 실패:", error.message);
+        alert(
+          "인증 처리 중 오류가 발생했습니다. 링크가 만료되었을 수 있습니다."
+        );
+      }
+    })();
+  }, []);
+
   // 인증 후 새 창에서 들어왔을 경우, 유저 정보를 다시 context에 채움
   useEffect(() => {
     const checkUser = async () => {
@@ -46,18 +62,17 @@ const VerificationPage = () => {
 
       const uid = session.user.id;
 
-      // ✅ 이미 행이 있으면 업데이트, 없으면 생성 (중복/재방문 안전)
+      // ✅ 이미 행이 있으면 업데이트, 없으면 생성
       const { error: upErr } = await supabase.from("users").upsert(
         {
           user_internal_id: uid,
           nickname: name,
         },
-        { onConflict: "user_internal_id" } // user_internal_id에 UNIQUE 인덱스가 있어야 안전
+        { onConflict: "user_internal_id" }
       );
 
       if (upErr) throw upErr;
 
-      // 완료 후 다음 페이지로
       navigate("/temp", { replace: true });
     } catch (e: any) {
       console.error("닉네임 저장 실패:", e?.message ?? e);
