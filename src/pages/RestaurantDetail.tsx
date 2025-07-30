@@ -159,7 +159,7 @@ export default function RestaurantDetailPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col">
         {restaurant?.category && (
-          <Badge>{restaurant.category === "Korean" && "한식"}</Badge>
+          <RestaurantCategoryBadge category={restaurant.category} />
         )}
         <div className="flex items-end gap-2">
           <h1 className="text-2xl font-bold mt-1 -mb-1">{restaurant?.name}</h1>
