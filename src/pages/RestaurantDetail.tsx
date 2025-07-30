@@ -1,6 +1,7 @@
 //import MenuCard from "@/components/MenuCard";
 import MenuCardSection from "@/components/MenuCardSection";
 import RatingStar from "@/components/RatingStar";
+import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 //import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import ReviewCard from "@/components/ReviewCard";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Menu } from "@/entities/menu";
 import { type Restaurant } from "@/entities/restaurant";
 import type { Review } from "@/entities/review";
+import staticMapUrl from "@/lib/static_map";
 import supabase from "@/lib/supabase";
 import { SendIcon, Star } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -68,7 +70,9 @@ export default function RestaurantDetailPage() {
         setRestaurant({
           id: data.id,
           name: data.name,
-          thumbnailUrl: new URL("https://picsum.photos/500"),
+          thumbnailUrl: data.thumbnail_url
+            ? new URL(data.thumbnail_url)
+            : undefined,
           latitude: data.latitude,
           longitude: data.longitude,
           address: data.address,
@@ -111,17 +115,18 @@ export default function RestaurantDetailPage() {
       .eq("restaurant_id", id)
       .order("id", { ascending: false })
       .then(({ data }) => {
-        const newData: ReviewWithNickname[] = data?.map((item) => {
-          return {
-            id: item.id,
-            restaurantID: item.restaurant_id,
-            userId: item.user_id,
-            content: item.content,
-            rating: item.rating,
-            createdAt: item.created_at,
-            nickname: item.users.nickname,
-          };
-        });
+        const newData: ReviewWithNickname[] =
+          data?.map((item) => {
+            return {
+              id: item.id,
+              restaurantID: item.restaurant_id,
+              userId: item.user_id,
+              comment: item.content,
+              rating: item.rating,
+              createdAt: item.created_at,
+              nickname: item.users.nickname,
+            };
+          }) || [];
 
         setReviews(newData);
       });

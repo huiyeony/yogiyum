@@ -25,7 +25,7 @@ export default function ReviewCard({
   editable = false,
 }: Props) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedComment, setEditedComment] = useState(review.content);
+  const [editedComment, setEditedComment] = useState(review.comment);
 
   return (
     <Card className="w-full flex flex-col gap-3 bg-white border rounded-lg p-4 shadow-sm">
@@ -57,7 +57,7 @@ export default function ReviewCard({
                 variant="outline"
                 className="text-xs px-2 py-1"
                 onClick={() => {
-                  setEditedComment(review.content);
+                  setEditedComment(review.comment);
                   setIsEditing(false);
                 }}
               >
@@ -83,7 +83,7 @@ export default function ReviewCard({
             </div>
           </div>
         ) : (
-          <p className="text-xs w-full break-words">{review.content}</p>
+          <p className="text-xs w-full break-words">{review.comment}</p>
         )}
       </div>
 
