@@ -2,13 +2,13 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { Restaurant } from "@/entities/restaurant";
-import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import RatingStar from "@/components/RatingStar";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
 
 import SmartCategoryBadge from "./ui/SmartCategoryBadge";
-import { translateCategory } from "@/utils/categoryTranslator";
+import { translateCategory } from "@/constants/categoryMap";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   restaurant: Restaurant;
@@ -31,6 +31,7 @@ export default function RestaurantCard({
   const [localLikedCount, setLocalLikedCount] = useState(likedCount);
   const [clicking, setClicking] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => setLocalLiked(isLiked), [isLiked]);
   useEffect(() => setLocalLikedCount(likedCount), [likedCount]);
@@ -64,6 +65,7 @@ export default function RestaurantCard({
   const isPopular = localLikedCount >= 3;
 
   const toggleLike = async () => {
+    if (!user) return;
     if (clicking || restaurantIdNum === undefined) return;
     setClicking(true);
 
@@ -180,6 +182,7 @@ export default function RestaurantCard({
         <SmartCategoryBadge
           label={translateCategory(restaurant.category)}
           type="compact"
+          disabled={false}
           className="w-[35px] text-center truncate"
         />
         {/* 텍스트 */}

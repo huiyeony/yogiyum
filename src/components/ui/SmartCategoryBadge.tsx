@@ -15,7 +15,7 @@ interface Props {
 
 export default function SmartCategoryBadge({
   label,
-  disabled,
+  disabled = false,
   type = "full",
   size = "xs", // ✅ 기본을 작게: 게시판 한 줄 배치에 최적화
   onClick,
