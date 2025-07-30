@@ -1,3 +1,4 @@
+
 import { AuthForm } from "@/components/AuthForm";
 import supabase from "@/lib/supabase";
 import { Link, useNavigate } from "react-router-dom";
@@ -68,3 +69,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
