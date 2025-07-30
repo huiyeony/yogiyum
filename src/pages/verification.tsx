@@ -14,7 +14,7 @@ const VerificationPage = () => {
   // 인증 후 새 창에서 들어왔을 경우, 유저 정보를 다시 context에 채움
   useEffect(() => {
     const checkUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
+      const { data } = await supabase.auth.getUser();
       if (data.user) {
         setUser(data.user);
       } else {
