@@ -1,4 +1,7 @@
 export interface Review {
+  /// 리뷰 id
+  id: number;
+
   /// 식당 ID
   restaurantID: number;
 

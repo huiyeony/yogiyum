@@ -5,16 +5,16 @@ export interface Restaurant {
   name: string;
 
   /// 식당 대표 사진 URL
-  thumbnailUrl: URL;
+  thumbnailUrl?: URL;
 
   /// 위도
-  latitude: number;
-
-  /// (도로명) 주소
-  address: number;
+  latitude: string;
 
   /// 경도
-  longitude: number;
+  longitude: string;
+
+  /// (도로명) 주소
+  address: string;
 
   /// 연락처
   telephone: string;
@@ -26,34 +26,33 @@ export interface Restaurant {
   category: RestaurantCategory;
 }
 
-export enum RestaurantCategory {
+export type RestaurantCategory =
   /// 한식
-  Korean = "Korean",
+  | "Korean"
 
   /// 양식
-  Western = "Western",
+  | "Western"
 
   /// 아시아음식
-  Asia = "Asia",
+  | "Asia"
 
   /// 일식
-  Japanese = "Japanese",
+  | "Japanese"
 
   /// 중식
-  Chinese = "Chinese",
+  | "Chinese"
 
   /// 분식
-  Street = "Street",
+  | "Street"
 
   /// 카페
-  Cafe = "Cafe",
+  | "Cafe"
 
   /// 뷔페
-  Buffet = "Buffet",
+  | "Buffet"
 
   /// 빵집
-  Bakery = "Bakery",
+  | "Bakery"
 
   /// 기타
-  Etc = "Etc",
-}
+  | "Etc";
