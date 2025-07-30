@@ -2,10 +2,13 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { Restaurant } from "@/entities/restaurant";
-import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import RatingStar from "@/components/RatingStar";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
+
+import SmartCategoryBadge from "./ui/SmartCategoryBadge";
+import { translateCategory } from "@/constants/categoryMap";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   restaurant: Restaurant;
@@ -28,6 +31,7 @@ export default function RestaurantCard({
   const [localLikedCount, setLocalLikedCount] = useState(likedCount);
   const [clicking, setClicking] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => setLocalLiked(isLiked), [isLiked]);
   useEffect(() => setLocalLikedCount(likedCount), [likedCount]);
@@ -61,6 +65,7 @@ export default function RestaurantCard({
   const isPopular = localLikedCount >= 3;
 
   const toggleLike = async () => {
+    if (!user) return;
     if (clicking || restaurantIdNum === undefined) return;
     setClicking(true);
 
@@ -172,9 +177,16 @@ export default function RestaurantCard({
         )}
       </div>
 
-      {/* 텍스트 */}
+      {/* 뱃지 COMPACT타입 */}
       <div className="flex flex-col gap-2">
-        <RestaurantCategoryBadge category={restaurant.category} />
+        <SmartCategoryBadge
+          label={translateCategory(restaurant.category)}
+          type="compact"
+          disabled={false}
+          className="w-[35px] text-center truncate"
+        />
+        {/* 텍스트 */}
+
         <div className="flex flex-col">
           <Link to={`/restaurant/${String(restaurant.id)}`}>
             <h2 className="text-base leading-5 h-14 font-['Gowun_Dodum'] text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">

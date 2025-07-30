@@ -14,7 +14,7 @@ export default function MainHeader() {
   const navigate = useNavigate();
 
   const handleLikeClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     if (!user) {
       e.preventDefault(); // 링크 이동 막기
@@ -63,7 +63,7 @@ function UserButton() {
   if (user) {
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger className="text-[#2c3e50] hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-medium px-2 py-1 rounded-md focus:outline-none font-['Gowun_Dodum']">
+        <DropdownMenuTrigger className="text-[#2c3e50] hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-['Gowun_Dodum'] ml-3 ">
           {user.nickname}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-white border border-[#ffd9cc] shadow-md rounded-md">
@@ -90,7 +90,7 @@ function UserButton() {
   return (
     <Link
       to="/login"
-      className="text-[#e4573d] hover:text-[#ff7043] hover:bg-[#ffe9e3] px-2 py-1 rounded-md font-['Gowun_Dodum'] transition-all duration-300"
+      className="text-[#2c3e50] hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-['Gowun_Dodum'] ml-3"
     >
       로그인
     </Link>
