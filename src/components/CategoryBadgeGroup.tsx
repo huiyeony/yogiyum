@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import SmartCategoryBadge from "@/components/ui/SmartCategoryBadge";
 import { categoryMap } from "@/constants/categoryMap";
 import type { CategoryLabel } from "@/constants/categoryMap";

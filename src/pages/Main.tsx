@@ -195,7 +195,6 @@ export default function MainPage() {
             일식: "Japanese",
             양식: "Western",
             카페: "Cafe",
-            빵집: "Bakery",
           }}
           onEndReached={handleEndReached}
           enableEndReached={true}
