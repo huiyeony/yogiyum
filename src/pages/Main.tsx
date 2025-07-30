@@ -42,11 +42,6 @@ export default function MainPage() {
   const [page, setPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
 
-  // ❤️ 좋아요 리스트 (옵션)
-  const [setLikedList] = useState<{ restaurant_id: number; liked: boolean }[]>(
-    []
-  );
-
   // 🔎 파라미터 동기화 (선택)
   useEffect(() => {
     const params: Record<string, string> = {};
@@ -54,18 +49,6 @@ export default function MainPage() {
     if (sortType && sortType !== "liked_count") params.sort = sortType;
     setSearchParams(params);
   }, [searchValue, sortType]);
-
-  //
-  const likedSearch = async () => {
-    const session = await supabase.auth.getSession();
-    await supabase
-      .from("liked")
-      .select("*")
-      .eq("user_id", session.data.session?.user.id)
-      .then((res) => {
-        setLikedList(res.data || []);
-      });
-  };
 
   // 📊 전체 개수 → maxPage 갱신
   useEffect(() => {
@@ -152,7 +135,6 @@ export default function MainPage() {
   useEffect(() => {
     setPage(1);
     fetchRestaurants({ nextPage: 1, append: false });
-    likedSearch(); // (옵션)
   }, [sortType, searchValue]);
 
   // 무한 스크롤: 게시판 sentinel 콜백
