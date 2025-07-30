@@ -172,7 +172,13 @@ export default function RestaurantDetailPage() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <img className="w-full aspect-video rounded-md border" />
+        <img
+          src={
+            restaurant &&
+            staticMapUrl(restaurant.latitude, restaurant.longitude).toString()
+          }
+          className="w-full aspect-video rounded-md border"
+        />
 
         <div className="w-full flex flex-col gap-2">
           <dl className="flex flex-row gap-6 text-right">

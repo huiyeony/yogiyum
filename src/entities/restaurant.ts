@@ -5,16 +5,16 @@ export interface Restaurant {
   name: string;
 
   /// 식당 대표 사진 URL
-  thumbnailUrl: URL;
+  thumbnailUrl?: URL;
 
   /// 위도
-  latitude: number;
-
-  /// (도로명) 주소
-  address: number;
+  latitude: string;
 
   /// 경도
-  longitude: number;
+  longitude: string;
+
+  /// (도로명) 주소
+  address: string;
 
   /// 연락처
   telephone: string;
