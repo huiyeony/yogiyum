@@ -12,28 +12,31 @@ import EditProfile from "./pages/edit-profile";
 import LikedRestaurantsPage from "./pages/LikedRestaurantsPage";
 
 const App = () => {
-    return (
-        <Routes>
-            {/* 헤더 없는게 시각적으로 깔끔 + 요기얌 누르면 메인페이지로 이동 가능 */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/temp" element={<TempPage />} />
+  return (
+    <Routes>
+      {/* 헤더 없는게 시각적으로 깔끔 + 요기얌 누르면 메인페이지로 이동 가능 */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/temp" element={<TempPage />} />
 
-            {/* 인트로 페이지 추가 */}
-            <Route path="/" element={<IntroPage />} />
-            <Route element={<Layout />}>
-                <Route path="/Main" element={<MainPage />} />
-                <Route path="/intro" element={<IntroPage />} />
-                <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
-                <Route path="/LikedRestaurantsPage" element={<LikedRestaurantsPage />} />
+      {/* 인트로 페이지 추가 */}
+      <Route path="/" element={<IntroPage />} />
+      <Route element={<Layout />}>
+        <Route path="/Main" element={<MainPage />} />
+        <Route path="/intro" element={<IntroPage />} />
+        <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
+        <Route
+          path="/LikedRestaurantsPage"
+          element={<LikedRestaurantsPage />}
+        />
 
-                <Route path="/temp" element={<TempPage />} />
-                <Route path="/verification" element={<VerificationPage />} />
-                <Route path="/mypage" element={<MyPage />} />
-                <Route path="/edit-profile" element={<EditProfile />} />
-            </Route>
-        </Routes>
-    );
+        <Route path="/temp" element={<TempPage />} />
+        <Route path="/verification" element={<VerificationPage />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+      </Route>
+    </Routes>
+  );
 };
 
 export default App;

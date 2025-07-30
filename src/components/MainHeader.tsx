@@ -40,7 +40,7 @@ export default function MainHeader() {
       </div>
 
       {/* 오른쪽 아이콘들 */}
-      <div className="flex items-center gap-4 sm:gap-6 text-[#2c3e50]">
+      <div className="flex items-center text-[#2c3e50]">
         <Link
           to="/LikedRestaurantsPage"
           className="hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-['Gowun_Dodum'] text-xm"
@@ -48,7 +48,7 @@ export default function MainHeader() {
         >
           찜 리스트
         </Link>
-        <span className="w-[2px] h-6 bg-red-500 opacity-50" />
+        <span className="w-[1.5px] h-4 ml-3 mr-[2px] bg-red-500 opacity-50" />
         <UserButton />
       </div>
     </header>
