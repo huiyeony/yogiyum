@@ -7,6 +7,9 @@ import RatingStar from "@/components/RatingStar";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
 
+import SmartCategoryBadge from "./ui/SmartCategoryBadge";
+import { translateCategory } from "@/utils/categoryTranslator";
+
 interface Props {
   restaurant: Restaurant;
   rating?: number;
@@ -172,9 +175,15 @@ export default function RestaurantCard({
         )}
       </div>
 
-      {/* 텍스트 */}
+      {/* 뱃지 COMPACT타입 */}
       <div className="flex flex-col gap-2">
-        <RestaurantCategoryBadge category={restaurant.category} />
+        <SmartCategoryBadge
+          label={translateCategory(restaurant.category)}
+          type="compact"
+          className="w-[35px] text-center truncate"
+        />
+        {/* 텍스트 */}
+
         <div className="flex flex-col">
           <Link to={`/restaurant/${String(restaurant.id)}`}>
             <h2 className="text-base leading-5 h-14 font-['Gowun_Dodum'] text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
