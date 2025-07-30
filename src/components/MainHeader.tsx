@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -15,7 +14,7 @@ export default function MainHeader() {
   const navigate = useNavigate();
 
   const handleLikeClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     if (!user) {
       e.preventDefault(); // 링크 이동 막기
@@ -24,7 +23,7 @@ export default function MainHeader() {
   };
   return (
     <header
-      className="flex justify-between items-center w-full px-6 py-3 
+      className="flex justify-between items-center w-full px-6 py-3
               sticky top-0 z-50 mb-2 bg-orange-200"
     >
       {/* 왼쪽 로고 */}
@@ -33,7 +32,7 @@ export default function MainHeader() {
 
         <Link to="/Main">
           <h1
-            className="text-2xl sm:text-5xl font-[Dongle] text-[#2c3e50] transition-all duration-300 ease-in-out 
+            className="text-2xl sm:text-5xl font-[Dongle] text-[#2c3e50] transition-all duration-300 ease-in-out
                    hover:text-[#ff7043] hover:-translate-y-1 hover:scale-105 hover:tracking-wide"
           >
             요기얌
