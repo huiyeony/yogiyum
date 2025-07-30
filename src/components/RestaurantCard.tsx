@@ -79,7 +79,7 @@ export default function RestaurantCard({
           alt={restaurant.name}
           onLoad={() => setImageLoaded(true)}
           onError={() => setImageLoaded(true)}
-          className={`w-full h-40 object-cover transition-opacity duration-500 rounded-md ${
+          className={`w-full h-full object-cover transition-opacity duration-500 rounded-md ${
             imageLoaded ? "opacity-100" : "opacity-0"
           }`}
         />
