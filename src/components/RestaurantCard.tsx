@@ -164,7 +164,7 @@ export default function RestaurantCard({
         {/* 2) 대체 이미지 */}
         {(!thumbnailSrc || showFallback) && (
           <img
-            src="/public/no-image.png" // 원하는 대체 이미지
+            src="/no-image.png" // 원하는 대체 이미지
             alt="이미지 없음"
             onLoad={() => setImageLoaded(true)}
             className="absolute inset-0 w-full h-full object-cover"

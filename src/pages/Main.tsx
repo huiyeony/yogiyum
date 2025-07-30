@@ -151,11 +151,30 @@ export default function MainPage() {
     <>
       <SignupCouponBanner />
 
-      <main className="bg-[#fffaf6] min-h-screen py-6 px-4">
-        {/* 🔍 검색창 */}
-        <div className="flex flex-row gap-4 items-center mb-6">
+      <main className="bg-[#fffaf6] min-h-screen py-4 px-4">
+        <div
+          className="mb-6 flex flex-nowrap items-center gap-17
+        "
+        >
+          {/* 드롭다운 */}
+          <div className="relative z-10 shrink-0 min-w-0 w-[88px] sm:w-[100px] md:w-[112px]">
+            <SortSelector
+              value={sortType}
+              onChange={(val) => {
+                setSortType(val);
+                setPage(1);
+                fetchRestaurants({ nextPage: 1, append: false, nextSort: val });
+              }}
+            />
+          </div>
+
+          {/* 검색창: 남는 폭 전체 사용 (겹침 방지용 클리핑 + z-index) */}
           <Input
-            className="font-['Gowun_Dodum'] h-12 w-full rounded-full px-6 bg-neutral-100 border-neutral-200 placeholder:text-black-400 placeholder:text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            className="relative z-0 overflow-hidden
+                 font-['Gowun_Dodum'] h-11 flex-auto min-w-0 rounded-full px-5
+                 bg-neutral-100 border-neutral-200
+                 placeholder:text-black-400 placeholder:text-[15px]
+                 focus:outline-none focus:ring-2 focus:ring-primary"
             type="text"
             placeholder="🔍  뭐 먹지? 지금 검색해보세요!"
             value={searchValue}
@@ -167,20 +186,6 @@ export default function MainPage() {
               }
             }}
           />
-        </div>
-
-        <div className="flex flex-col gap-2 mb">
-          {/* 🔽 정렬 */}
-          <div className="flex gap-4 items-center mb-1">
-            <SortSelector
-              onChange={(val) => {
-                setSortType(val);
-                setPage(1);
-                fetchRestaurants({ nextPage: 1, append: false, nextSort: val });
-              }}
-              value={sortType}
-            />
-          </div>
         </div>
 
         {/* 📋 게시판 (카테고리 뱃지 그룹은 RestaurantBoard 내부에서 관리) */}
@@ -205,6 +210,7 @@ export default function MainPage() {
 }
 
 // ✅ 정렬 셀렉트
+
 function SortSelector({
   onChange,
   value,
@@ -214,14 +220,23 @@ function SortSelector({
 }) {
   return (
     <Select onValueChange={onChange} value={value}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger
+        className="
+          relative inline-flex items-center
+          h-11 w-auto min-w-max px-3 pr-10
+          text-sm whitespace-nowrap
+          font-['Gowun_Dodum']
+        "
+        aria-label="정렬 방식"
+      >
         <SelectValue placeholder="정렬 방식" />
       </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="liked_count">찜하기 많은 순</SelectItem>
+
+      <SelectContent sideOffset={4} className="font-['Gowun_Dodum']">
+        <SelectItem value="liked_count">좋아요 많은 순</SelectItem>
         <SelectItem value="review_count">리뷰 많은 순</SelectItem>
         <SelectItem value="average_rating">별점 높은 순</SelectItem>
-        <SelectItem value="name">이름순(가나다/ABC)</SelectItem>
+        <SelectItem value="name">이름 순</SelectItem>
       </SelectContent>
     </Select>
   );
