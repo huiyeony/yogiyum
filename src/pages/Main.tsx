@@ -1,11 +1,9 @@
 // ✅ 기본 import
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // ✅ 컴포넌트 import
-import RestaurantCard from "@/components/RestaurantCard";
 import SignupCouponBanner from "@/components/banner";
-import CategoryModal from "@/components/ui/categorymodal";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -15,132 +13,49 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// ✅ 데이터 및 타입 import
-import { RestaurantCategory, type Restaurant } from "@/entities/restaurant";
+import RestaurantBoard, {
+  type RestaurantWithStats,
+  type SortKey,
+} from "@/components/RestaurantBoard";
+
+// ✅ Supabase
 import supabase from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
 
-// ✅ 한글 카테고리 → 영문 카테고리 매핑
-const categoryMap: Record<string, string> = {
-  한식: "Korean",
-  중식: "Chinese",
-  일식: "Japanese",
-  양식: "Western",
-  카페: "Cafe",
-};
-
-// ✅ 레스토랑 통계 타입 정의
-interface RestaurantWithStats extends Restaurant {
-  averageRating: number;
-  likedUserCount: number;
-}
-
-// ✅ 정렬 기준 타입
-type SortType = "liked_count" | "review_count" | "average_rating";
-
-const categoryStyleMap: Record<
-  string,
-  { emoji: string; label: string; color: string }
-> = {
-  전체: { emoji: "📋", label: "전체", color: "bg-gray-300" },
-  한식: { emoji: "🍚", label: "한식", color: "bg-lime-400" },
-  양식: { emoji: "🍝", label: "양식", color: "bg-orange-400" },
-  일식: { emoji: "🍣", label: "일식", color: "bg-red-400" },
-  중식: { emoji: "🍜", label: "중식", color: "bg-sky-400" },
-  카페: { emoji: "☕", label: "카페", color: "bg-stone-400" },
-  빵집: { emoji: "🥐", label: "빵집", color: "bg-gray-400" },
-};
-
+// ✅ 정렬 기준
+type SortType = "liked_count" | "review_count" | "average_rating" | "name";
 const DEFAULT_PAGE_SIZE = 20;
 
-// ✅ 메인 페이지 컴포넌트
 export default function MainPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // 🔧 상태 정의
   const [restaurants, setRestaurants] = useState<RestaurantWithStats[]>([]);
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-  const [likedList, setLikedList] = useState<
-    { restaurant_id: number; liked: boolean }[]
-  >([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchValue, setSearchValue] = useState(searchParams.get("q") ?? "");
-  const [selectedCategories, setSelectedCategories] = useState(
-    searchParams.get("category")
-      ? searchParams.get("category")!.split(",")
-      : ["전체"],
+  const [isLoading, setIsLoading] = useState<boolean>(true); // 초기 true 권장
+  const [searchValue, setSearchValue] = useState<string>(
+    searchParams.get("q") ?? ""
   );
   const [sortType, setSortType] = useState<SortType>(
-    (searchParams.get("sort") as SortType) ?? "liked_count",
+    ((searchParams.get("sort") as SortType) ?? "liked_count") as SortType
   );
+
+  // 페이지네이션
   const [page, setPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
-  const lastItemRef = useRef<HTMLDivElement>(null);
 
+  // ❤️ 좋아요 리스트 (옵션)
+  const [setLikedList] = useState<{ restaurant_id: number; liked: boolean }[]>(
+    []
+  );
+
+  // 🔎 파라미터 동기화 (선택)
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setPage((prev) => prev + 1);
-      }
-    });
+    const params: Record<string, string> = {};
+    if (searchValue) params.q = searchValue;
+    if (sortType && sortType !== "liked_count") params.sort = sortType;
+    setSearchParams(params);
+  }, [searchValue, sortType]);
 
-    if (lastItemRef.current) {
-      observer.observe(lastItemRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [restaurants]);
-
-  // 🔍 식당 검색 함수
-  const search = async () => {
-    setIsLoading(true);
-
-    let query = supabase
-      .from("restaurants_with_stats")
-      .select("*")
-      .order(sortType, { ascending: false })
-      .order("id")
-      .ilike("name", `%${searchValue}%`)
-      .range((page - 1) * DEFAULT_PAGE_SIZE, page * DEFAULT_PAGE_SIZE - 1);
-
-    // ✅ 전체가 아닐 경우 → 카테고리 필터링
-    if (
-      !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
-    ) {
-      const mappedCategories = selectedCategories.map(
-        (cat) => categoryMap[cat],
-      );
-      query = query.in("category", mappedCategories);
-    }
-
-    const { data } = await query;
-
-    if (!data) {
-      setIsLoading(false);
-      return;
-    }
-
-    // 데이터 가공
-    const newData: RestaurantWithStats[] = data.map((item) => ({
-      id: item.id,
-      name: item.name,
-      thumbnailUrl: new URL(item.thumbnail_url ?? "https://example.com/"),
-      latitude: item.latitude,
-      longitude: item.longitude,
-      address: item.address,
-      telephone: item.phone,
-      openingHour: "",
-      category: item.category,
-      averageRating: item.average_rating,
-      likedUserCount: item.liked_count,
-    }));
-
-    setRestaurants(newData);
-    setIsLoading(false);
-  };
-
-  // ❤️ 좋아요 리스트 조회
+  //
   const likedSearch = async () => {
     const session = await supabase.auth.getSession();
     await supabase
@@ -152,84 +67,104 @@ export default function MainPage() {
       });
   };
 
-  // 최대 페이지 수 구하기
+  // 📊 전체 개수 → maxPage 갱신
   useEffect(() => {
-    supabase
-      .from("restaurants_with_stats")
-      .select("id", { count: "exact", head: true })
-      .then((res) => {
-        setMaxPage(Math.ceil(res.count ?? 0 / DEFAULT_PAGE_SIZE));
-      });
-  }, []);
+    const fetchCount = async () => {
+      let countQuery = supabase
+        .from("restaurants_with_stats")
+        .select("id", { count: "exact", head: true });
 
-  // 페이지 넘겨졌을 경우
-  useEffect(() => {
-    if (page >= maxPage) return;
+      if (searchValue.trim()) {
+        countQuery = countQuery.ilike("name", `%${searchValue}%`);
+      }
+
+      const { count } = await countQuery;
+      const total = count ?? 0;
+      setMaxPage(Math.max(1, Math.ceil(total / DEFAULT_PAGE_SIZE)));
+    };
+
+    fetchCount();
+  }, [searchValue]);
+
+  // 🔍 데이터 조회 (페이지·정렬·검색 반영 / 카테고리 필터 제거됨)
+  const fetchRestaurants = async ({
+    nextPage = 1,
+    append = false,
+    nextSort = sortType,
+    nextQ = searchValue,
+  }: {
+    nextPage?: number;
+    append?: boolean;
+    nextSort?: SortType;
+    nextQ?: string;
+  }) => {
+    setIsLoading(true);
 
     let query = supabase
       .from("restaurants_with_stats")
       .select("*")
-      .order(sortType, { ascending: false })
-      .order("id")
-      .range((page - 1) * DEFAULT_PAGE_SIZE, page * DEFAULT_PAGE_SIZE - 1);
-
-    if (
-      !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
-    ) {
-      const mappedCategories = selectedCategories.map(
-        (cat) => categoryMap[cat],
+      .order(nextSort === "name" ? "name" : nextSort, {
+        ascending: nextSort === "name", // 이름만 오름차순, 나머지는 desc
+      })
+      .order("id") // tie-break
+      .range(
+        (nextPage - 1) * DEFAULT_PAGE_SIZE,
+        nextPage * DEFAULT_PAGE_SIZE - 1
       );
-      query = query.in("category", mappedCategories);
+
+    if (nextQ.trim()) {
+      query = query.ilike("name", `%${nextQ}%`);
     }
 
-    query.then((res) => {
-      if (!res.data) return;
-      const newData = res.data.map((item) => ({
+    const { data, error } = await query;
+    if (error) {
+      console.error("[fetchRestaurants] error:", error.message);
+      setRestaurants([]);
+      setIsLoading(false);
+      return;
+    }
+
+    const mappedData: RestaurantWithStats[] =
+      data?.map((item: any) => ({
         id: item.id,
         name: item.name,
-        thumbnailUrl: new URL(item.thumbnail_url ?? "https://example.com/"),
+        thumbnailUrl: item.thumbnail_url
+          ? new URL(item.thumbnail_url)
+          : undefined,
         latitude: item.latitude,
         longitude: item.longitude,
         address: item.address,
         telephone: item.phone,
         openingHour: "",
-        category: item.category,
+        category: item.category, // EN
         averageRating: item.average_rating,
         likedUserCount: item.liked_count,
-      }));
+        reviewCount: item.review_count ?? 0,
+      })) ?? [];
 
-      setRestaurants([...restaurants!, ...newData]);
-    });
-  }, [page]);
+    setRestaurants((prev) =>
+      append ? [...(prev ?? []), ...mappedData] : mappedData
+    );
+    setIsLoading(false);
+  };
 
-  // 🌀 의존성 변화 시 검색 실행
+  // 초기 & 의존성 변화 시: 1페이지로 재조회
   useEffect(() => {
-    const params: any = {};
+    setPage(1);
+    fetchRestaurants({ nextPage: 1, append: false });
+    likedSearch(); // (옵션)
+  }, [sortType, searchValue]);
 
-    if (searchValue) params.q = searchValue;
-    if (
-      !(selectedCategories.length === 1 && selectedCategories[0] === "전체")
-    ) {
-      params.category = selectedCategories.join(",");
-    }
-    if (sortType !== "liked_count") {
-      params.sort = sortType;
-    }
+  // 무한 스크롤: 게시판 sentinel 콜백
+  const handleEndReached = () => {
+    if (isLoading) return;
+    if (page >= maxPage) return;
 
-    setSearchParams(params);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchRestaurants({ nextPage, append: true });
+  };
 
-    search();
-    likedSearch();
-  }, [searchValue, selectedCategories, sortType]);
-
-  //비어있을 경우 카테고리 : 전체로 변환
-  useEffect(() => {
-    if (selectedCategories.length === 0) {
-      setSelectedCategories(["전체"]);
-    }
-  }, [selectedCategories]);
-
-  // ✅ 실제 화면 렌더
   return (
     <>
       <SignupCouponBanner />
@@ -241,144 +176,54 @@ export default function MainPage() {
             className="h-12 w-full rounded-full px-6 bg-neutral-100 border-neutral-200 placeholder:text-black-400 placeholder:text-base focus:outline-none focus:ring-2 focus:ring-primary"
             type="text"
             placeholder="🔍  뭐 먹지? 지금 검색해보세요!"
+            value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") search();
+              if (e.key === "Enter") {
+                setPage(1);
+                fetchRestaurants({ nextPage: 1, append: false });
+              }
             }}
           />
         </div>
 
         <div className="flex flex-col gap-2 mb-4">
-          {/* 🔽 정렬 + 카테고리 버튼 */}
+          {/* 🔽 정렬 */}
           <div className="flex gap-4 items-center mb-1">
-            <SortSelector onChange={setSortType} value={sortType} />
-
-            <button
-              onClick={() => setIsCategoryModalOpen(true)}
-              className="h-9 px-3 py-2 text-sm rounded-md border border-input bg-transparent text-foreground outline-none flex items-center justify-between"
-            >
-              카테고리
-            </button>
-          </div>
-
-          {/* 카테고리 뱃지  */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {selectedCategories.map((category, index) => {
-              const { emoji, label, color } = categoryStyleMap[category] || {
-                emoji: "❓",
-                label: category,
-                color: "bg-gray-300",
-              };
-
-              const isDisabled =
-                selectedCategories.length === 1 && category === "전체";
-
-              return (
-                <div
-                  key={index}
-                  onClick={() => {
-                    if (!isDisabled) {
-                      setSelectedCategories((prev) =>
-                        prev.filter((cat) => cat !== category),
-                      );
-                    }
-                  }}
-                  className={`
-    flex flex-col items-center justify-center w-16 h-20 rounded-lg cursor-pointer transition-all duration-200 ease-in-out
-    ${color} ${
-      isDisabled
-        ? "opacity-50 cursor-not-allowed"
-        : "hover:scale-105 hover:shadow-md"
-    }
-  `}
-                >
-                  {/* 이모지 (흰색 원 배경 안에 표시) */}
-                  <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center shadow">
-                    <span className="text-xl">{emoji}</span>
-                  </div>
-
-                  {/* 라벨 (아래 글씨) */}
-                  <div className="mt-1 text-black text-[11px] font-[jua]">
-                    {label}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 📦 카테고리 모달 */}
-        {isCategoryModalOpen && (
-          <div
-            className="fixed inset-0 bg-black/30 z-[1000] flex justify-center items-end"
-            onClick={() => setIsCategoryModalOpen(false)}
-          >
-            <CategoryModal
-              selected={selectedCategories}
-              onChange={setSelectedCategories}
-              onClose={() => setIsCategoryModalOpen(false)}
-              onClick={(e) => e.stopPropagation()}
+            <SortSelector
+              onChange={(val) => {
+                setSortType(val);
+                setPage(1);
+                fetchRestaurants({ nextPage: 1, append: false, nextSort: val });
+              }}
+              value={sortType}
             />
           </div>
-        )}
-
-        {/* 📋 검색 결과 섹션 */}
-        <div className="p-2">
-          {isLoading ? (
-            // 🔄 로딩 중 화면
-            <div className="flex flex-col items-center justify-center py-12">
-              <img
-                src="/loading.gif"
-                alt="로딩 중"
-                className="w-32 h-32 object-contain mb-4"
-              />
-              <p className="text-lg text-[#e4573d]">
-                맛집을 불러오는 중이에요...
-              </p>
-            </div>
-          ) : restaurants && restaurants.length > 0 ? (
-            // ✅ 결과 리스트
-            <div className="grid grid-cols-2 gap-3">
-              {restaurants.map((item, idx) => {
-                return (
-                  <>
-                    <RestaurantCard
-                      key={idx}
-                      restaurant={item}
-                      rating={item.averageRating}
-                      likedCount={item.likedUserCount}
-                      isLiked={likedList.some(
-                        (liked) => liked.restaurant_id === item.id,
-                      )}
-                      onSearch={likedSearch}
-                    />
-                    {idx === restaurants.length - 1 && (
-                      <div ref={lastItemRef} />
-                    )}
-                  </>
-                );
-              })}
-            </div>
-          ) : (
-            // ❌ 검색 결과 없음
-            <div className="flex flex-col items-center justify-center text-center py-24 bg-[#fff2ed] rounded-lg mt-10">
-              <img
-                src="/no_results.png"
-                alt="검색 결과 없음"
-                className="w-48 h-48 object-contain mb-6 opacity-70"
-              />
-              <p className="text-2xl text-[#e4573d] font-jua">
-                검색 결과가 없습니다 😢
-              </p>
-            </div>
-          )}
         </div>
+
+        {/* 📋 게시판 (카테고리 뱃지 그룹은 RestaurantBoard 내부에서 관리) */}
+        <RestaurantBoard
+          restaurants={restaurants}
+          sortKey={toSortKey(sortType)}
+          isLoading={isLoading}
+          // RestaurantBoard 내부 필터용: 한→영 매핑 전달
+          categoryKRtoENMap={{
+            한식: "Korean",
+            중식: "Chinese",
+            일식: "Japanese",
+            양식: "Western",
+            카페: "Cafe",
+            빵집: "Bakery",
+          }}
+          onEndReached={handleEndReached}
+          enableEndReached={true}
+        />
       </main>
     </>
   );
 }
 
-// ✅ 정렬 셀렉트 컴포넌트
+// ✅ 정렬 셀렉트
 function SortSelector({
   onChange,
   value,
@@ -395,7 +240,13 @@ function SortSelector({
         <SelectItem value="liked_count">찜하기 많은 순</SelectItem>
         <SelectItem value="review_count">리뷰 많은 순</SelectItem>
         <SelectItem value="average_rating">별점 높은 순</SelectItem>
+        <SelectItem value="name">이름순(가나다/ABC)</SelectItem>
       </SelectContent>
     </Select>
   );
+}
+
+// ✅ MainPage의 SortType → RestaurantBoard의 SortKey로 캐스팅(동일 타입이면 생략 가능)
+function toSortKey(s: SortType): SortKey {
+  return s as SortKey;
 }
