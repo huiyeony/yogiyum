@@ -63,7 +63,7 @@ export default function RestaurantBoard({
   /** 모든 라벨 목록 (초기 전체 선택) */
   const allLabels = useMemo(
     () => Object.keys(categoryKRtoENMap) as CategoryLabel[],
-    [categoryKRtoENMap],
+    [categoryKRtoENMap]
   );
 
   /** 선택 라벨: 처음엔 전부 선택 */
@@ -111,7 +111,7 @@ export default function RestaurantBoard({
       return zeroSelectShowsEmpty ? [] : restaurants;
     }
     const selectedEN = new Set(
-      selectedLabels.map((kr) => categoryKRtoENMap[kr]),
+      selectedLabels.map((kr) => categoryKRtoENMap[kr])
     );
     return restaurants.filter((r) => selectedEN.has(r.category));
   }, [restaurants, selectedLabels, categoryKRtoENMap, zeroSelectShowsEmpty]);
@@ -122,13 +122,13 @@ export default function RestaurantBoard({
     switch (sortKey) {
       case "liked_count":
         return base.sort(
-          (a, b) => (b.likedUserCount ?? 0) - (a.likedUserCount ?? 0),
+          (a, b) => (b.likedUserCount ?? 0) - (a.likedUserCount ?? 0)
         );
       case "review_count":
         return base.sort((a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0));
       case "average_rating":
         return base.sort(
-          (a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0),
+          (a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0)
         );
       case "name":
       default:
@@ -172,7 +172,7 @@ export default function RestaurantBoard({
           onEndReached();
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     );
 
     io.observe(el);
@@ -188,14 +188,14 @@ export default function RestaurantBoard({
       </div>
 
       {showEmptyGuide ? (
-        <div className="flex flex-col items-center justify-center text-center py-20 bg-[rgba(255,242,237,0.6)] rounded-lg">
+        <div className="font-['Gowun_Dodum'] flex flex-col items-center justify-center text-center py-20 bg-[rgba(255,242,237,0.6)] rounded-lg">
           <img
             src="/no_results.png"
             alt="선택된 카테고리가 없습니다"
             className="w-40 h-40 object-contain mb-4 opacity-70"
           />
-          <p className="text-lg text-[#e4573d] font-jua">
-            카테고리를 선택해 주세요 😊
+          <p className="text-lg text-[#e4573d] font-['Gowun_Dodum']">
+            카테고리를 선택해 주세요
           </p>
         </div>
       ) : !isLoading && sorted.length === 0 ? (
@@ -206,7 +206,7 @@ export default function RestaurantBoard({
             alt="검색 결과 없음"
             className="w-40 h-40 object-contain mb-4 opacity-70"
           />
-          <p className="text-lg text-[#e4573d] font-jua">
+          <p className="text-lg text-[#e4573d] font-['Gowun_Dodum']">
             조건에 맞는 식당이 없어요 😢
           </p>
         </div>
@@ -218,7 +218,7 @@ export default function RestaurantBoard({
 
             /**  현재 카드가 찜 상태인지(로그인 유저 기준) */
             const isLiked = likedList.some(
-              (l) => l.restaurant_id === Number(item.id),
+              (l) => l.restaurant_id === Number(item.id)
             );
 
             return (

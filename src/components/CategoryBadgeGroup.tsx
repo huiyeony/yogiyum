@@ -48,7 +48,7 @@ export default function CategoryBadgeGroup({ onChange }: Props) {
           type="button"
           onClick={handleToggleAll}
           aria-pressed={isAllSelected}
-          className="inline-flex px-3.5 py-2.5 text-sm font-[jua] bg-zinc-200 hover:bg-zinc-300 rounded-md shadow transition-all"
+          className="inline-flex px-3.5 py-2.5 text-sm font-['Gowun_Dodum'] bg-zinc-200 hover:bg-zinc-300 rounded-md shadow transition-all"
         >
           {toggleButtonText}
         </button>

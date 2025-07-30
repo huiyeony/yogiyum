@@ -114,7 +114,9 @@ export default function SmartCategoryBadge({
       </div>
 
       {/* 카테고리 이름 */}
-      <div className={[baseFont, S.label].join(" ")}>{label}</div>
+      <div className={[baseFont, S.label].join(" ")}>
+        {<p className="font-['Gowun_Dodum']">{label}</p>}
+      </div>
     </div>
   );
 }

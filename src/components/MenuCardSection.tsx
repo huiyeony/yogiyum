@@ -24,7 +24,7 @@ export default function MenuCardSection(props: Props) {
         className="flex flex-col gap-4"
       >
         <header className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">메뉴</h2>
+          <h2 className="text-2xl  font-[jua]">메뉴 📃</h2>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="icon">
               <ChevronsUpDownIcon />

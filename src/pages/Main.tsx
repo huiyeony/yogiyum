@@ -155,7 +155,7 @@ export default function MainPage() {
         {/* 🔍 검색창 */}
         <div className="flex flex-row gap-4 items-center mb-6">
           <Input
-            className="h-12 w-full rounded-full px-6 bg-neutral-100 border-neutral-200 placeholder:text-black-400 placeholder:text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            className="font-['Gowun_Dodum'] h-12 w-full rounded-full px-6 bg-neutral-100 border-neutral-200 placeholder:text-black-400 placeholder:text-base focus:outline-none focus:ring-2 focus:ring-primary"
             type="text"
             placeholder="🔍  뭐 먹지? 지금 검색해보세요!"
             value={searchValue}

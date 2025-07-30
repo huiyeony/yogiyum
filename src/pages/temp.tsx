@@ -1,4 +1,3 @@
-
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 import { useEffect } from "react";
@@ -46,11 +45,11 @@ const TempPage = () => {
       </div>
     ) : from === "signup" ? (
       <div className="mt-5 font-[jua]">
-        <p className="text-red-600">{userEmail}</p>로 인증 메일이
-        발송되었습니다. <br />
+        <p className="text-red-600 font-['Gowun_Dodum']">{userEmail}</p>로 인증
+        메일이 발송되었습니다. <br />
         <br />
         <button
-          className="hover:underline hover:text-red-500 font-[jua]"
+          className="hover:underline hover:text-red-500 font-['Gowun_Dodum']"
           onClick={resendVerificationEmail}
         >
           이메일이 오지 않았나요?
@@ -74,7 +73,7 @@ const TempPage = () => {
       <div className="mb-8 text-center space-y-2">
         <EmojiButton />
         <Link to="/">
-          <h1 className="text-7xl font-[Dongle] text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
+          <h1 className="text-3xl font-['Gowun_Dodum'] text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
             요기얌
           </h1>
         </Link>
