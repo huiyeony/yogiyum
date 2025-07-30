@@ -58,19 +58,19 @@ export default function MainHeader() {
 }
 
 function UserButton() {
-  const { user, loading, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (loading) return;
+  // useEffect(() => {
+  //   if (loading) return;
 
-    if (user) {
-      console.log("현재 로그인한 사용자:", user.nickname);
-    } else {
-      console.log("로그인 안 됨");
-    }
-  }, [user, loading]);
+  //   if (user) {
+  //     console.log("현재 로그인한 사용자:", user.nickname);
+  //   } else {
+  //     console.log("로그인 안 됨");
+  //   }
+  // }, [user, loading]);
 
   if (user) {
     return (

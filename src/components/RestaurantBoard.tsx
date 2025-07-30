@@ -68,20 +68,20 @@ export default function RestaurantBoard({
 }: RestaurantBoardProps) {
   const lastItemRef = useRef<HTMLDivElement | null>(null);
 
-  /** ✅ 모든 라벨 목록 (초기 전체 선택) */
+  /** 모든 라벨 목록 (초기 전체 선택) */
   const allLabels = useMemo(
     () => Object.keys(categoryKRtoENMap) as CategoryLabel[],
     [categoryKRtoENMap]
   );
 
-  /** ✅ 선택 라벨: 처음엔 전부 선택 */
+  /** 선택 라벨: 처음엔 전부 선택 */
   const [selectedLabels, setSelectedLabels] =
     useState<CategoryLabel[]>(allLabels);
 
-  /** ✅ 좋아요 목록(현재 로그인 유저의 찜) */
+  /**  좋아요 목록(현재 로그인 유저의 찜) */
   const [likedList, setLikedList] = useState<{ restaurant_id: number }[]>([]);
 
-  /** ✅ 좋아요 목록 조회 */
+  /**  좋아요 목록 조회 */
   const fetchLikedList = async () => {
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData?.session?.user?.id;
@@ -144,6 +144,29 @@ export default function RestaurantBoard({
     }
   }, [filtered, sortKey]);
 
+  /**  noResult 계산을 렌더 전으로 끌어올림 (아래 자동 다음페이지 요청에서 사용) */
+  const showEmptyGuide = selectedLabels.length === 0 && zeroSelectShowsEmpty;
+  const noResult = !showEmptyGuide && !isLoading && sorted.length === 0;
+
+  /**  (추가) 결과가 비어있을 때, 자동으로 다음 페이지를 한 번 요청 */
+  const autoRequestRef = useRef(false);
+  useEffect(() => {
+    // 무한스크롤이 켜져 있고 콜백이 있으며, 현재 결과가 0건인데
+    // 이미 로드된 전체 배열은 존재한다면(=데이터는 있지만 필터 때문에 비어보임),
+    // 상위에서 더 로드할 수 있도록 한번 요청해 준다.
+    if (!enableEndReached || !onEndReached) return;
+
+    if (!isLoading && noResult && restaurants.length > 0) {
+      if (!autoRequestRef.current) {
+        autoRequestRef.current = true;
+        onEndReached(); // 상위에서 hasMore에 따라 다음 페이지 로드/무시
+      }
+    } else {
+      // 결과가 생기거나 로딩 중이면 다시 요청 가능 상태로 리셋
+      autoRequestRef.current = false;
+    }
+  }, [noResult, isLoading, enableEndReached, onEndReached, restaurants.length]);
+
   /** 3) 무한스크롤 sentinel 관찰 */
   useEffect(() => {
     if (!enableEndReached || !onEndReached) return;
@@ -165,9 +188,6 @@ export default function RestaurantBoard({
   }, [enableEndReached, onEndReached, isLoading, sorted]);
 
   /** 4) UI 분기 */
-  const showEmptyGuide = selectedLabels.length === 0 && zeroSelectShowsEmpty;
-  const noResult = !showEmptyGuide && !isLoading && sorted.length === 0;
-
   return (
     <section className="p-2">
       {/* 🔖 카테고리 뱃지 그룹 (게시판 내부 관리) */}
@@ -175,7 +195,6 @@ export default function RestaurantBoard({
         <CategoryBadgeGroup onChange={handleBadgeChange} />
       </div>
 
-      {/* 선택 0개 → 안내 */}
       {showEmptyGuide ? (
         <div className="flex flex-col items-center justify-center text-center py-20 bg-[rgba(255,242,237,0.6)] rounded-lg">
           <img
@@ -187,8 +206,8 @@ export default function RestaurantBoard({
             카테고리를 선택해 주세요 😊
           </p>
         </div>
-      ) : noResult ? (
-        // 결과 0건
+      ) : !isLoading && sorted.length === 0 ? (
+        // 결과 0건 (상위가 다음 페이지를 로드하면 곧 채워짐)
         <div className="flex flex-col items-center justify-center text-center py-20 bg-[rgba(255,242,237,0.6)] rounded-lg">
           <img
             src="/no_results.png"
@@ -205,7 +224,7 @@ export default function RestaurantBoard({
           {sorted.map((item, idx) => {
             const isLast = idx === sorted.length - 1;
 
-            /** ✅ 현재 카드가 찜 상태인지(로그인 유저 기준) */
+            /**  현재 카드가 찜 상태인지(로그인 유저 기준) */
             const isLiked = likedList.some(
               (l) => l.restaurant_id === Number(item.id)
             );
@@ -213,13 +232,12 @@ export default function RestaurantBoard({
             return (
               <div key={item.id}>
                 <RestaurantCard
-                  restaurant={item} //
+                  restaurant={item}
                   rating={item.averageRating ?? 0}
                   likedCount={item.likedUserCount ?? 0}
-                  isLiked={isLiked} // ✅ 진짜 찜 상태
-                  onSearch={fetchLikedList} // ✅ 카드 토글 후 최신화
+                  isLiked={isLiked}
+                  onSearch={fetchLikedList}
                 />
-
                 {enableEndReached && isLast && <div ref={lastItemRef} />}
               </div>
             );

@@ -23,6 +23,7 @@ export default function RestaurantCard({
   onSearch,
 }: Props) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [showFallback, setShowFallback] = useState(false); // ★ 대체 이미지 표시 여부
   const [localLiked, setLocalLiked] = useState(isLiked);
   const [localLikedCount, setLocalLikedCount] = useState(likedCount);
   const [clicking, setClicking] = useState(false); // 중복 클릭 방지
@@ -30,12 +31,25 @@ export default function RestaurantCard({
   useEffect(() => setLocalLiked(isLiked), [isLiked]);
   useEffect(() => setLocalLikedCount(likedCount), [likedCount]);
 
+  // 썸네일 src 안전 변환 (빈 문자열 금지)
   const thumbnailSrc = useMemo(() => {
-    const t = (restaurant as any).thumbnailUrl as string | URL | undefined;
-    if (!t) return "";
+    const t = (restaurant as any).thumbnailUrl as
+      | string
+      | URL
+      | undefined
+      | null;
+    if (!t) return undefined;
     return typeof t === "string" ? t : t.toString();
   }, [restaurant]);
 
+  // 썸네일이 바뀔 때 fallback/로딩 상태 초기화
+  useEffect(() => {
+    setShowFallback(false);
+    // 썸네일이 없으면 곧바로 로딩 끝 상태로
+    setImageLoaded(!thumbnailSrc ? true : false);
+  }, [thumbnailSrc]);
+
+  // 숫자 ID로 맞추기
   const restaurantIdNum = useMemo(() => {
     const raw = (restaurant as any).id;
     const n = typeof raw === "number" ? raw : Number(raw);
@@ -50,6 +64,7 @@ export default function RestaurantCard({
 
     setClicking(true);
 
+    // 낙관적 업데이트
     const next = !localLiked;
     setLocalLiked(next);
     setLocalLikedCount((prev) => prev + (next ? 1 : -1));
@@ -78,6 +93,7 @@ export default function RestaurantCard({
       onSearch();
     } catch (e) {
       console.error(e);
+      // 실패하면 롤백
       setLocalLiked((prev) => !prev);
       setLocalLikedCount((prev) => prev - (next ? 1 : -1));
     } finally {
@@ -115,7 +131,7 @@ export default function RestaurantCard({
         </span>
       </div>
 
-      {/* 이미지: 로딩/썸네일 동일 사이즈 */}
+      {/* 이미지: 원본 실패 시 대체 이미지 표시 */}
       <div className="relative w-full aspect-video mt-1 bg-gray-100 rounded-md overflow-hidden">
         {!imageLoaded && (
           <img
@@ -124,24 +140,44 @@ export default function RestaurantCard({
             className="absolute inset-0 w-full h-full object-cover opacity-70"
           />
         )}
-        <img
-          src={thumbnailSrc}
-          alt={restaurant.name}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageLoaded(true)}
 
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+        {/* 1) 정상 썸네일 시도 (fallback 미사용일 때만) */}
+        {thumbnailSrc && !showFallback && (
+          <img
+            src={thumbnailSrc}
+            alt={restaurant.name}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => {
+              // 원본 실패 → 대체 이미지로 전환
+              setShowFallback(true);
+              setImageLoaded(false); // fallback 로드되면 true로 전환됨
+            }}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        )}
 
-            imageLoaded ? "opacity-100" : "opacity-0"
-          }`}
-        />
+        {/* 2) 대체 이미지 (썸네일 없음 또는 실패 시) */}
+        {(!thumbnailSrc || showFallback) && (
+          <img
+            src="/public/no-image.png" // ★ 원하는 대체 이미지 경로
+            alt="이미지 없음"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => {
+              // 대체 이미지도 실패하면 로딩 제거 + 텍스트 표시(선택)
+              setImageLoaded(true);
+            }}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
       </div>
 
       {/* 텍스트 */}
       <div className="flex flex-col gap-2">
-        <RestaurantCategoryBadge category={restaurant.category} />
+        <RestaurantCategoryBadge category={(restaurant as any).category} />
         <div className="flex flex-col">
-          <Link to={`/restaurant/${String(restaurant.id)}`}>
+          <Link to={`/restaurant/${String((restaurant as any).id)}`}>
             <h2 className="text-lg font-semibold text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
               {restaurant.name}
             </h2>
