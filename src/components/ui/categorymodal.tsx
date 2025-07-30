@@ -1,6 +1,6 @@
 import React from "react";
 
-const categories = ["한식", "중식", "일식", "양식", "카페", "빵집"];
+const categories = ["한식", "중식", "일식", "양식", "카페"];
 
 export default function CategoryModal({
   selected,

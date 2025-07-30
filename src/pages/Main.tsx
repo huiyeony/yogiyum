@@ -169,7 +169,7 @@ export default function MainPage() {
           />
         </div>
 
-        <div className="flex flex-col gap-2 mb-4">
+        <div className="flex flex-col gap-2 mb">
           {/* 🔽 정렬 */}
           <div className="flex gap-4 items-center mb-1">
             <SortSelector

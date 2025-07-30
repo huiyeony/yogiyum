@@ -28,7 +28,9 @@ export default function RestaurantCategoryBadge({ category }: Props) {
 
   return (
     <span
-      className={`rounded-sm w-fit px-2 py-[2px] text-xs font-medium ${selected.color ?? "bg-gray-300"}`}
+      className={`rounded-sm w-fit px-2 py-[2px] text-xs font-medium ${
+        selected.color ?? "bg-gray-300"
+      }`}
     >
       {selected.label}
     </span>

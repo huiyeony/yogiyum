@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import SmartCategoryBadge from "@/components/ui/SmartCategoryBadge";
 import { categoryMap } from "@/constants/categoryMap";
 import type { CategoryLabel } from "@/constants/categoryMap";
 
 interface Props {
+  /** 선택 변경 콜백 */
   onChange?: (selected: CategoryLabel[]) => void;
+  /** 컴포넌트 바깥 여백 등 커스터마이즈용 */
+  className?: string;
 }
 
-export default function CategoryBadgeGroup({ onChange }: Props) {
+export default function CategoryBadgeGroup({ onChange, className }: Props) {
   const allLabels = Object.keys(categoryMap) as CategoryLabel[];
   const [selected, setSelected] = useState<CategoryLabel[]>(allLabels);
 
@@ -30,28 +33,32 @@ export default function CategoryBadgeGroup({ onChange }: Props) {
   const toggleButtonText = isAllSelected ? "모두 제거🚫" : "모두 선택✅";
 
   return (
-    <div>
-      {/* 배지 + 버튼을 같은 플로우에 두고 줄바꿈 허용 */}
-      <div className="flex flex-wrap items-center gap-2">
-        {allLabels.map((label) => (
-          <SmartCategoryBadge
-            key={label}
-            label={label}
-            disabled={!selected.includes(label)}
-            onClick={() => toggleCategory(label)}
-            size="md"
-          />
-        ))}
-
-        {/* 토글 버튼: 플로우에 섞여서 필요하면 다음 줄로 내려감 */}
+    <div className={className}>
+      {/* 한 줄 스크롤 배지 리스트 (토글버튼 + 카테고리) */}
+      <div className="flex flex-nowrap items-center gap-2 overflow-x-auto py-1 pl-[5px]">
+        {/* 토글 버튼 */}
         <button
           type="button"
           onClick={handleToggleAll}
           aria-pressed={isAllSelected}
-          className="inline-flex px-3.5 py-2.5 text-sm font-['Gowun_Dodum'] bg-zinc-200 hover:bg-zinc-300 rounded-md shadow transition-all"
+          className="flex-none inline-flex items-center justify-center 
+            rounded-md w-[72px] h-17 px-2.5 py-2 text-[13px] font-['Gowun_Dodum'] 
+            shadow bg-zinc-200 hover:bg-zinc-300 transition-transform hover:scale-105"
         >
           {toggleButtonText}
         </button>
+
+        {/* 카테고리 뱃지들 */}
+        {allLabels.map((label) => (
+          <div key={label} className="flex-none">
+            <SmartCategoryBadge
+              label={label}
+              disabled={!selected.includes(label)}
+              onClick={() => toggleCategory(label)}
+              size="md"
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
