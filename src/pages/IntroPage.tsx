@@ -30,7 +30,7 @@ export default function IntroPage() {
         <div className="flex flex-col">
           {/* 첫 줄: "마곡의 모든 맛집," */}
           <motion.p
-            className="text-4xl text-gray-700"
+            className="text-4xl text-gray-700 font-['Gowun_Dodum']"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
@@ -51,7 +51,7 @@ export default function IntroPage() {
             </motion.span>
 
             <motion.span
-              className="text-6xl text-orange-500 font-bold"
+              className="text-5xl text-orange-500 font-[jua]"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 1.8 }}
@@ -60,7 +60,7 @@ export default function IntroPage() {
             </motion.span>
 
             <motion.span
-              className="text-4xl text-gray-700"
+              className="text-4xl text-gray-700 font-['Gowun_Dodum']"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.4 }}

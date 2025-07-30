@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { Restaurant } from "@/entities/restaurant";
@@ -6,14 +6,13 @@ import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import RatingStar from "@/components/RatingStar";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   restaurant: Restaurant;
   rating?: number;
   likedCount: number;
   isLiked: boolean;
-  onSearch: () => void; // 부모에서 리스트/좋아요 다시 불러오는 함수
+  onSearch: () => void;
 }
 
 export default function RestaurantCard({
@@ -24,11 +23,12 @@ export default function RestaurantCard({
   onSearch,
 }: Props) {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [showFallback, setShowFallback] = useState(false); // ★ 대체 이미지 표시 여부
+  const [showFallback, setShowFallback] = useState(false);
   const [localLiked, setLocalLiked] = useState(isLiked);
   const [localLikedCount, setLocalLikedCount] = useState(likedCount);
-  const [clicking, setClicking] = useState(false); // 중복 클릭 방지
-  const { user } = useAuth();
+  const [clicking, setClicking] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
   useEffect(() => setLocalLiked(isLiked), [isLiked]);
   useEffect(() => setLocalLikedCount(likedCount), [likedCount]);
 
@@ -39,14 +39,19 @@ export default function RestaurantCard({
     return typeof t === "string" ? t : t.toString();
   }, [restaurant]);
 
-  // 썸네일이 바뀔 때 fallback/로딩 상태 초기화
+  // 썸네일 변경 시 초기화 + 캐시 완료 대응
   useEffect(() => {
     setShowFallback(false);
-    // 썸네일이 없으면 곧바로 로딩 끝 상태로
-    setImageLoaded(!thumbnailSrc ? true : false);
+    if (!thumbnailSrc) {
+      setImageLoaded(true); // 이미지 없으면 스피너 즉시 종료
+      return;
+    }
+    setImageLoaded(false);
+    requestAnimationFrame(() => {
+      if (imgRef.current?.complete) setImageLoaded(true);
+    });
   }, [thumbnailSrc]);
 
-  // 숫자 ID로 맞추기
   const restaurantIdNum = useMemo(() => {
     const raw = restaurant.id;
     const n = typeof raw === "number" ? raw : Number(raw);
@@ -56,16 +61,12 @@ export default function RestaurantCard({
   const isPopular = localLikedCount >= 3;
 
   const toggleLike = async () => {
-    if (!user) return;
-    if (clicking) return;
-    if (restaurantIdNum === undefined) return;
-
+    if (clicking || restaurantIdNum === undefined) return;
     setClicking(true);
 
-    // 낙관적 업데이트
     const next = !localLiked;
     setLocalLiked(next);
-    setLocalLikedCount((prev) => prev + (next ? 1 : -1));
+    setLocalLikedCount((p) => p + (next ? 1 : -1));
 
     try {
       const { data: sessionData, error: sessErr } =
@@ -87,13 +88,11 @@ export default function RestaurantCard({
           .eq("restaurant_id", restaurantIdNum);
         if (error) throw error;
       }
-
       onSearch();
     } catch (e) {
       console.error(e);
-      // 실패하면 롤백
-      setLocalLiked((prev) => !prev);
-      setLocalLikedCount((prev) => prev - (next ? 1 : -1));
+      setLocalLiked((p) => !p);
+      setLocalLikedCount((p) => p - (next ? 1 : -1));
     } finally {
       setClicking(false);
     }
@@ -101,9 +100,8 @@ export default function RestaurantCard({
 
   return (
     <Card className="w-full relative flex flex-col rounded-xl overflow-hidden bg-[#fffaf6] transition-transform duration-100 hover:scale-[1.02] p-3 gap-3">
-      {/* 인기 배지 */}
       {isPopular && (
-        <div className="absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-extrabold rounded-md shadow-lg z-20">
+        <div className="font-['Gowun_Dodum'] absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-extrabold rounded-md shadow-lg z-20">
           인기 맛집
         </div>
       )}
@@ -129,7 +127,7 @@ export default function RestaurantCard({
         </span>
       </div>
 
-      {/* 이미지: 원본 실패 시 대체 이미지 표시 */}
+      {/* 이미지: 실패 시 대체 이미지 */}
       <div className="relative w-full aspect-video mt-1 bg-gray-100 rounded-md overflow-hidden">
         {!imageLoaded && (
           <img
@@ -139,16 +137,19 @@ export default function RestaurantCard({
           />
         )}
 
-        {/* 1) 정상 썸네일 시도 (fallback 미사용일 때만) */}
+        {/* 1) 정상 썸네일 */}
         {thumbnailSrc && !showFallback && (
           <img
+            key={thumbnailSrc}
+            ref={imgRef}
             src={thumbnailSrc}
             alt={restaurant.name}
+            loading="lazy"
+            decoding="async"
             onLoad={() => setImageLoaded(true)}
             onError={() => {
-              // 원본 실패 → 대체 이미지로 전환
               setShowFallback(true);
-              setImageLoaded(false); // fallback 로드되면 true로 전환됨
+              setImageLoaded(false);
             }}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
               imageLoaded ? "opacity-100" : "opacity-0"
@@ -156,16 +157,12 @@ export default function RestaurantCard({
           />
         )}
 
-        {/* 2) 대체 이미지 (썸네일 없음 또는 실패 시) */}
+        {/* 2) 대체 이미지 */}
         {(!thumbnailSrc || showFallback) && (
           <img
-            src="/public/no-image.png" // ★ 원하는 대체 이미지 경로
+            src="/public/no-image.png" // 원하는 대체 이미지
             alt="이미지 없음"
             onLoad={() => setImageLoaded(true)}
-            onError={() => {
-              // 대체 이미지도 실패하면 로딩 제거 + 텍스트 표시(선택)
-              setImageLoaded(true);
-            }}
             className="absolute inset-0 w-full h-full object-cover"
           />
         )}
@@ -176,7 +173,7 @@ export default function RestaurantCard({
         <RestaurantCategoryBadge category={restaurant.category} />
         <div className="flex flex-col">
           <Link to={`/restaurant/${String(restaurant.id)}`}>
-            <h2 className="text-lg font-semibold text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
+            <h2 className="text-lg font-['Gowun_Dodum'] text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
               {restaurant.name}
             </h2>
           </Link>

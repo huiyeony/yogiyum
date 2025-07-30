@@ -79,12 +79,17 @@ function MyPage() {
     fetchUserAndComments();
   }, []);
 
-  if (loading) return <div className="p-8 text-center">로딩 중...</div>;
+  if (loading)
+    return (
+      <div className="p-8 text-center font-['Gowun_Dodum']">로딩 중...</div>
+    );
 
   if (!userId) {
     return (
       <div className="w-[60vw] mx-auto mt-10 text-center space-y-4">
-        <p className="text-neutral-500">로그인 후 이용해주세요.</p>
+        <p className="text-neutral-500 font-['Gowun_Dodum']">
+          로그인 후 이용해주세요.
+        </p>
         <button
           className="mt-4 px-4 py-2 bg-black text-white rounded-md"
           onClick={() => navigate("/")}
@@ -108,13 +113,13 @@ function MyPage() {
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Badge variant={"secondary"} className="font-[jua]">
+              <Badge variant={"secondary"} className="font-['Gowun_Dodum']">
                 닉네임
               </Badge>
               <span className="text-sm">{nickname}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant={"secondary"} className="font-[jua]">
+              <Badge variant={"secondary"} className="font-['Gowun_Dodum']">
                 가입일
               </Badge>
               <span className="text-sm">

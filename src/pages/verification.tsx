@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "@/lib/supabase";
@@ -50,13 +49,15 @@ const VerificationPage = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
       <div className="mb-8 text-center space-y-2">
         <EmojiButton />
-        <h1 className="text-7l font-[Dongle] font-bold text-foreground">
+        <h1 className="text-3xl font-['Gowun_Dodum'] font-bold text-foreground">
           요기얌
         </h1>
-        <div className="mt-5 text-xl font-[jua]">회원 가입 완료✅</div>
+        <div className="mt-5 text-xl font-['Gowun_Dodum']">
+          회원 가입 완료✅
+        </div>
       </div>
       <div>
-        <h1 className="text-2xl font-semibold text-center font-[jua] pb-8">
+        <h1 className="text-2xl font-semibold text-center font-['Gowun_Dodum'] pb-8">
           닉네임을 입력해주세요
         </h1>
         <div className="flex flex-row gap-3">
@@ -67,7 +68,7 @@ const VerificationPage = () => {
           />
           <Button
             type="submit"
-            className="font-[jua] w-1/4 bg-red-400 hover:bg-red-600 transition-colors duration-200"
+            className="font-['Gowun_Dodum'] w-1/4 bg-red-400 hover:bg-red-600 transition-colors duration-200"
             onClick={handleSubmit}
           >
             등록

@@ -32,10 +32,14 @@ export default function ReviewCard({
       {/* 상단 - 제목 + 별점 + 버튼 */}
       <header className="w-full flex flex-col sm:flex-row justify-between sm:items-center gap-2">
         <div className="w-full flex flex-col gap-2">
-          <h3 className="text-lg font-semibold text-center w-full ">{title}</h3>
+          <h3 className="text-lg font-['Gowun_Dodum'] text-center w-full ">
+            {title}
+          </h3>
           <Separator />
           <div className="flex items-center gap-1">
-            <Badge variant="secondary">평점</Badge>
+            <Badge variant="secondary" className="font-['Gowun_Dodum']">
+              평점
+            </Badge>
             <RatingStar rating={review.rating} digit={1} size={16} />
           </div>
         </div>
@@ -43,19 +47,21 @@ export default function ReviewCard({
 
       {/* 본문 */}
       <div className="flex items-center gap-2">
-        <Badge variant="secondary">리뷰</Badge>
+        <Badge variant="secondary" className="font-['Gowun_Dodum']">
+          리뷰
+        </Badge>
         {isEditing ? (
           <div className="flex flex-col gap-2 w-full">
             <Textarea
               value={editedComment}
               onChange={(e) => setEditedComment(e.target.value)}
-              className="text-sm w-full min-h-[80px]"
+              className="text-sm w-full min-h-[80px] font-['Gowun_Dodum']"
             />
             <div className="flex justify-end gap-2">
               <Button
                 size="sm"
                 variant="outline"
-                className="text-xs px-2 py-1"
+                className="text-xs px-2 py-1 font-['Gowun_Dodum']"
                 onClick={() => {
                   setEditedComment(review.comment);
                   setIsEditing(false);
@@ -65,7 +71,7 @@ export default function ReviewCard({
               </Button>
               <Button
                 size="sm"
-                className="bg-orange-500 hover:bg-orange-400 text-white px-3 py-1 text-xs"
+                className="bg-orange-500 hover:bg-orange-400 text-white px-3 py-1 text-xs font-['Gowun_Dodum']"
                 onClick={async () => {
                   const { error } = await supabase
                     .from("reviews")

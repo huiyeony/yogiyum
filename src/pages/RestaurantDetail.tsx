@@ -167,7 +167,9 @@ export default function RestaurantDetailPage() {
           <RestaurantCategoryBadge category={restaurant.category} />
         )}
         <div className="flex items-end gap-2">
-          <h1 className="text-2xl font-bold mt-1 -mb-1">{restaurant?.name}</h1>
+          <h1 className="text-2xl font-['Gowun_Dodum'] mt-1 -mb-1">
+            {restaurant?.name}
+          </h1>
           <RatingStar
             rating={restaurant?.averageRating ?? 0}
             digit={2}
@@ -176,7 +178,7 @@ export default function RestaurantDetailPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 ">
         <img
           src={
             restaurant &&
@@ -185,10 +187,13 @@ export default function RestaurantDetailPage() {
           className="w-full aspect-video rounded-md border"
         />
 
-        <div className="w-full flex flex-col gap-2">
+        <div className="w-full flex flex-col gap-2 ">
           <dl className="flex flex-row gap-6 text-right">
             <dt className="w-15 flex items-center justify-start font-semibold">
-              <Badge variant="secondary" className="text-sm font-semibold">
+              <Badge
+                variant="secondary"
+                className="text-sm font-['Gowun_Dodum'] "
+              >
                 주소
               </Badge>
             </dt>
@@ -202,9 +207,12 @@ export default function RestaurantDetailPage() {
             </dd>
           </dl>
 
-          <dl className="flex flex-row gap-6 text-right">
+          <dl className="flex flex-row gap-6 text-right ">
             <dt className="w-15 flex items-center justify-start font-semibold">
-              <Badge variant="secondary" className="text-sm font-semibold">
+              <Badge
+                variant="secondary"
+                className="text-sm font-['Gowun_Dodum']"
+              >
                 연락처
               </Badge>
             </dt>
@@ -219,9 +227,11 @@ export default function RestaurantDetailPage() {
         </div>
       </div>
 
-      {menus && menus.length > 0 && <MenuCardSection menus={menus} />}
+      <div className="mt-8">
+        {menus && menus.length > 0 && <MenuCardSection menus={menus} />}
+      </div>
 
-      <div className="flex flex-col gap-4 mt-10">
+      <div className="flex flex-col gap-4 mt-8">
         <div className="flex flex-col">
           <h2 className="text-2xl font-[jua]">리뷰 💬</h2>
         </div>
@@ -229,14 +239,17 @@ export default function RestaurantDetailPage() {
         <div className="flex flex-row gap-2 items-end">
           <div className="flex flex-col gap-4 flex-1">
             <div className="flex items-center gap-2  rounded-lg">
-              <Badge variant="outline" className="border border-neutral-200">
+              <Badge
+                variant="outline"
+                className="border border-neutral-200 font-['Gowun_Dodum']"
+              >
                 별점 선택
               </Badge>
               <StarSelector onSelect={setReviewRating} />
             </div>
 
             <Textarea
-              className="resize-none"
+              className="resize-none font-['Gowun_Dodum']"
               placeholder={
                 isLogin
                   ? "리뷰를 여기에 작성해주세요."

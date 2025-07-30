@@ -50,22 +50,22 @@ const SignUpPage = () => {
         <div className="mb-8 text-center space-y-2">
           <EmojiButton />
           <Link to="/Main">
-            <h1 className="text-7xl font-[Dongle] text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
+            <h1 className="text-3xl font-['Gowun_Dodum'] text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
               요기얌
             </h1>
           </Link>
-          <p className="text-sm text-muted-foreground pt-4 font-[jua]">
+          <p className="text-xm text-muted-foreground pt-4 font-[jua]">
             맛집 리뷰를 남기고 공유해보세요
           </p>
         </div>
 
         <AuthForm type="signup" onSubmit={handleSignup} />
 
-        <p className="mt-6 text-sm text-muted-foreground font-[jua]">
+        <p className="mt-6 text-xm text-muted-foreground font-['Gowun_Dodum']">
           이미 계정이 있으신가요? ➡️{" "}
           <Link
             to="/login"
-            className="text-primary underline-offset-4 hover:underline  hover:text-red-500 font-medium font-[jua]"
+            className="text-primary underline-offset-4 hover:underline  hover:text-red-500 text-xm font-['Gowun_Dodum']"
           >
             로그인 하기
           </Link>
