@@ -6,10 +6,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EmojiButton from "@/components/EmojiButton";
 
-const SITE_URL = import.meta.env.VITE_SITE_URL || window.location.origin;
-
-const redirectTo = `${SITE_URL.replace(/\/$/, "")}/verification`;
-
 const SignUpPage = () => {
   const navigate = useNavigate();
 
@@ -18,7 +14,9 @@ const SignUpPage = () => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: redirectTo },
+      options: {
+        emailRedirectTo: "https://yogiyum.vercel.app/verification",
+      },
     });
 
     if (error) {
