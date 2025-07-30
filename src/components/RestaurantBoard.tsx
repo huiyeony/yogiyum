@@ -3,18 +3,10 @@ import RestaurantCard from "@/components/RestaurantCard";
 import CategoryBadgeGroup from "@/components/CategoryBadgeGroup";
 import type { CategoryLabel } from "@/constants/categoryMap";
 import supabase from "@/lib/supabase";
+import type { Restaurant } from "@/entities/restaurant";
 
 /** 서버에서 내려오는 식당 + 통계 타입 */
-export interface RestaurantWithStats {
-  id: number | string;
-  name: string;
-  thumbnailUrl?: URL;
-  latitude?: number;
-  longitude?: number;
-  address?: string;
-  telephone?: string;
-  openingHour?: string;
-  category: string; // EN: "Korean", "Japanese", ...
+export interface RestaurantWithStats extends Restaurant {
   averageRating?: number; // average_rating
   likedUserCount?: number; // liked_count
   reviewCount?: number; // review_count (있는 경우)
@@ -71,7 +63,7 @@ export default function RestaurantBoard({
   /** 모든 라벨 목록 (초기 전체 선택) */
   const allLabels = useMemo(
     () => Object.keys(categoryKRtoENMap) as CategoryLabel[],
-    [categoryKRtoENMap]
+    [categoryKRtoENMap],
   );
 
   /** 선택 라벨: 처음엔 전부 선택 */
@@ -119,7 +111,7 @@ export default function RestaurantBoard({
       return zeroSelectShowsEmpty ? [] : restaurants;
     }
     const selectedEN = new Set(
-      selectedLabels.map((kr) => categoryKRtoENMap[kr])
+      selectedLabels.map((kr) => categoryKRtoENMap[kr]),
     );
     return restaurants.filter((r) => selectedEN.has(r.category));
   }, [restaurants, selectedLabels, categoryKRtoENMap, zeroSelectShowsEmpty]);
@@ -130,13 +122,13 @@ export default function RestaurantBoard({
     switch (sortKey) {
       case "liked_count":
         return base.sort(
-          (a, b) => (b.likedUserCount ?? 0) - (a.likedUserCount ?? 0)
+          (a, b) => (b.likedUserCount ?? 0) - (a.likedUserCount ?? 0),
         );
       case "review_count":
         return base.sort((a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0));
       case "average_rating":
         return base.sort(
-          (a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0)
+          (a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0),
         );
       case "name":
       default:
@@ -180,7 +172,7 @@ export default function RestaurantBoard({
           onEndReached();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     io.observe(el);
@@ -226,7 +218,7 @@ export default function RestaurantBoard({
 
             /**  현재 카드가 찜 상태인지(로그인 유저 기준) */
             const isLiked = likedList.some(
-              (l) => l.restaurant_id === Number(item.id)
+              (l) => l.restaurant_id === Number(item.id),
             );
 
             return (
