@@ -46,7 +46,7 @@ export default function ReviewCard({
       </header>
 
       {/* 본문 */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-start gap-2">
         <Badge variant="secondary" className="font-['Gowun_Dodum']">
           리뷰
         </Badge>
@@ -89,7 +89,9 @@ export default function ReviewCard({
             </div>
           </div>
         ) : (
-          <p className="text-xs w-full break-words">{review.comment}</p>
+          <p className="text-xs mt-[2px] w-full break-words">
+            {review.comment}
+          </p>
         )}
       </div>
 

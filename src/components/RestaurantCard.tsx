@@ -177,7 +177,7 @@ export default function RestaurantCard({
         <RestaurantCategoryBadge category={restaurant.category} />
         <div className="flex flex-col">
           <Link to={`/restaurant/${String(restaurant.id)}`}>
-            <h2 className="text-lg font-['Gowun_Dodum'] text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
+            <h2 className="text-base leading-5 h-14 font-['Gowun_Dodum'] text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
               {restaurant.name}
             </h2>
           </Link>
