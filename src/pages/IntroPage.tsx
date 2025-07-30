@@ -41,7 +41,7 @@ export default function IntroPage() {
           {/* 둘째 줄: "요기얌에서" (요기얌만 딜레이 + 강조) */}
           <div className="flex flex-row items-baseline gap-2 mt-2">
             <motion.span
-              className="text-5xl text-gray-700"
+              className="text-5xl text-gray-800"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.6 }}

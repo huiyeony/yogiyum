@@ -40,10 +40,10 @@ export default function MainHeader() {
       </div>
 
       {/* 오른쪽 아이콘들 */}
-      <div className="flex items-center gap-4 sm:gap-6 text-[#e4573d]">
+      <div className="flex items-center gap-4 sm:gap-6 text-[#2c3e50]">
         <Link
           to="/LikedRestaurantsPage"
-          className="hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-['Gowun_Dodum'] text-xs"
+          className="hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-['Gowun_Dodum'] text-xm"
           onClick={handleLikeClick}
         >
           찜 리스트

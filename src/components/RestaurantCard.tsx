@@ -101,8 +101,12 @@ export default function RestaurantCard({
   return (
     <Card className="w-full relative flex flex-col rounded-xl overflow-hidden bg-[#fffaf6] transition-transform duration-100 hover:scale-[1.02] p-3 gap-3">
       {isPopular && (
-        <div className="font-['Gowun_Dodum'] absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-extrabold rounded-md shadow-lg z-20">
-          인기 맛집
+        <div
+          className="font-['Gowun_Dodum'] absolute top-2 left-2 px-2 py-1
+  bg-white text-orange-600 text-xs font-extrabold
+  rounded-md border border-orange-500/80 shadow-sm z-20"
+        >
+          인기 맛집🔥
         </div>
       )}
 
