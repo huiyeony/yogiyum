@@ -15,7 +15,7 @@ const SignUpPage = () => {
       email,
       password,
       options: {
-        emailRedirectTo: "https://yogiyum.vercel.app/verification",
+        emailRedirectTo: ""https://yogiyum.vercel.app/verification",
       },
     });
 
