@@ -36,7 +36,7 @@ const SignUpPage = () => {
           console.log("✅ 이메일 인증 감지됨 → /verification 이동");
           navigate("/verification");
         }
-      }
+      },
     );
 
     return () => {
@@ -49,7 +49,7 @@ const SignUpPage = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
         <div className="mb-8 text-center space-y-2">
           <EmojiButton />
-          <Link to="/Main">
+          <Link to="/main">
             <h1 className="text-3xl font-['Gowun_Dodum'] text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out">
               요기얌
             </h1>

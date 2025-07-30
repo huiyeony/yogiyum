@@ -40,7 +40,7 @@ const LoginPage = () => {
         <div className="mb-8 text-center space-y-2">
           <EmojiButton />
 
-          <Link to="/Main">
+          <Link to="/main">
             <h1 className="text-3xl font-jua text-black hover:text-[#e4573d] transition-colors duration-300 ease-in-out font-['Gowun_Dodum']">
               요기얌
             </h1>
