@@ -63,7 +63,7 @@ function UserButton() {
   if (user) {
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger className="text-[#2c3e50] hover:scale-120 transition-all duration-300 font-medium px-2 py-1 rounded-md focus:outline-none font-['Gowun_Dodum']">
+        <DropdownMenuTrigger className="text-[#2c3e50] hover:text-[#ff5630] hover:scale-120 transition-all duration-300 font-medium px-2 py-1 rounded-md focus:outline-none font-['Gowun_Dodum']">
           {user.nickname}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-white border border-[#ffd9cc] shadow-md rounded-md">
