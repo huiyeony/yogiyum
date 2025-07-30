@@ -1,3 +1,4 @@
+
 import { AuthForm } from "@/components/AuthForm";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
