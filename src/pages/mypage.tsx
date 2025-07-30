@@ -60,11 +60,11 @@ function MyPage() {
         const newData: ReviewWithRestaurant[] =
           reviews?.map((item) => ({
             id: item.id,
-            restaurant_id: item.restaurant_id,
-            user_id: item.user_id,
-            content: item.content,
+            restaurantID: item.restaurant_id,
+            userId: item.user_id,
+            comment: item.content,
             rating: item.rating,
-            created_at: item.created_at,
+            createdAt: item.created_at,
             restaurants: {
               place_name: item.restaurants?.place_name || "알 수 없음",
             },
@@ -96,7 +96,6 @@ function MyPage() {
   }
 
   const displayedComments = showAll ? comments : comments.slice(0, 5);
-  const hasMore = comments.length > 5;
   const toggleLabel = showAll ? "접기" : "더보기";
 
   return (
@@ -163,7 +162,7 @@ function MyPage() {
                 title={review.restaurants?.place_name || "알 수 없음"}
                 onUpdate={(newContent) => {
                   const updated = [...comments];
-                  updated[idx] = { ...updated[idx], content: newContent };
+                  updated[idx] = { ...updated[idx], comment: newContent };
                   setComments(updated);
                 }}
                 onDelete={() => {
