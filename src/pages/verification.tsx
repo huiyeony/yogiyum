@@ -4,11 +4,9 @@ import supabase from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import EmojiButton from "@/components/EmojiButton";
-import { useAuth } from "@/contexts/AuthContext";
 
 const VerificationPage = () => {
   const [nickname, setNickname] = useState("");
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   // 인증 후 새 창에서 들어왔을 경우, 유저 정보를 다시 context에 채움
@@ -26,23 +24,45 @@ const VerificationPage = () => {
   }, []);
 
   const handleSubmit = async () => {
-    if (!user) {
-      alert("로그인 정보가 없습니다.");
+    const name = nickname.trim();
+    if (!name) {
+      alert("닉네임을 입력해주세요.");
       return;
     }
 
-    const { error } = await supabase.from("users").insert({
-      user_internal_id: user.id,
-      nickname,
-    });
+    try {
+      // ✅ 현재 탭의 세션에서 uid 가져오기 (컨텍스트 사용 X)
+      const {
+        data: { session },
+        error: sessErr,
+      } = await supabase.auth.getSession();
+      if (sessErr) throw sessErr;
+      if (!session?.user) {
+        alert(
+          "로그인 정보를 확인할 수 없습니다. 이메일 인증 후 다시 시도해주세요."
+        );
+        return;
+      }
 
-    if (error) {
-      console.error("DB 삽입 실패:", error.message);
-      alert("회원 정보 저장에 실패했습니다.");
-      return;
+      const uid = session.user.id;
+
+      // ✅ 이미 행이 있으면 업데이트, 없으면 생성 (중복/재방문 안전)
+      const { error: upErr } = await supabase.from("users").upsert(
+        {
+          user_internal_id: uid,
+          nickname: name,
+        },
+        { onConflict: "user_internal_id" } // user_internal_id에 UNIQUE 인덱스가 있어야 안전
+      );
+
+      if (upErr) throw upErr;
+
+      // 완료 후 다음 페이지로
+      navigate("/temp", { replace: true });
+    } catch (e: any) {
+      console.error("닉네임 저장 실패:", e?.message ?? e);
+      alert("회원 정보 저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
     }
-
-    navigate("/temp");
   };
 
   return (

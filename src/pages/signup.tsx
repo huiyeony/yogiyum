@@ -1,3 +1,4 @@
+
 import { AuthForm } from "@/components/AuthForm";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
@@ -5,6 +6,7 @@ import Fade from "@/components/ShiftPage";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EmojiButton from "@/components/EmojiButton";
+
 const SignUpPage = () => {
   const navigate = useNavigate();
 
@@ -36,7 +38,7 @@ const SignUpPage = () => {
           console.log("✅ 이메일 인증 감지됨 → /verification 이동");
           navigate("/verification");
         }
-      },
+      }
     );
 
     return () => {
