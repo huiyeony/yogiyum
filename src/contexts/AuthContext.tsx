@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { User as SupabaseAuthUser } from "@supabase/supabase-js";
+//import type { User as SupabaseAuthUser } from "@supabase/supabase-js";
 import supabase from "@/lib/supabase";
 
 //   DB에 저장된 유저 정보 타입
@@ -104,4 +104,5 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 //  context 사용하는 훅
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

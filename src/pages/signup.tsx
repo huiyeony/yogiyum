@@ -42,7 +42,7 @@ const SignUpPage = () => {
     return () => {
       listener.subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <Fade>

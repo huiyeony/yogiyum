@@ -1,7 +1,6 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 import { useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import EmojiButton from "@/components/EmojiButton";
 import supabase from "@/lib/supabase";
 
@@ -9,8 +8,6 @@ const TempPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { from, userEmail } = location.state || {};
-
-  const { user, setUser, setLoading } = useAuth(); // ✅ 로그인 상태 확인
 
   // 메일 재전송 함수
   const resendVerificationEmail = async () => {
