@@ -8,7 +8,7 @@ export default function IntroPage() {
   //3.5초 유지
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/Main");
+      navigate("/main");
     }, 3000);
     return () => clearTimeout(timer);
   }, [navigate]);
