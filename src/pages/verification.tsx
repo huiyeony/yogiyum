@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "@/lib/supabase";
@@ -8,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const VerificationPage = () => {
   const [nickname, setNickname] = useState("");
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   // 인증 후 새 창에서 들어왔을 경우, 유저 정보를 다시 context에 채움
@@ -16,7 +17,7 @@ const VerificationPage = () => {
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser();
       if (data.user) {
-        setUser(data.user);
+        //setUser(data.user);
       } else {
         alert("이메일 인증 후 다시 로그인해주세요.");
       }

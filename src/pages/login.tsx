@@ -1,3 +1,4 @@
+
 import { AuthForm } from "@/components/AuthForm";
 import supabase from "@/lib/supabase";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,11 +8,11 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { setUser, setLoading } = useAuth(); //  context에서 로그인 정보
+  const { setLoading } = useAuth(); //  context에서 로그인 정보
 
   //로그인 입력 처리
   const handleLogin = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -28,7 +29,7 @@ const LoginPage = () => {
       alert(message);
     } else {
       //로그인 상태 변경
-      setUser(data.user);
+
       setLoading(false);
       navigate("/");
     }
@@ -68,3 +69,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+

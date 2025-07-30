@@ -6,6 +6,7 @@ import RestaurantCategoryBadge from "@/components/RestaurantCategoryBadge";
 import RatingStar from "@/components/RatingStar";
 import supabase from "@/lib/supabase";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   restaurant: Restaurant;
@@ -27,17 +28,13 @@ export default function RestaurantCard({
   const [localLiked, setLocalLiked] = useState(isLiked);
   const [localLikedCount, setLocalLikedCount] = useState(likedCount);
   const [clicking, setClicking] = useState(false); // 중복 클릭 방지
-
+  const { user } = useAuth();
   useEffect(() => setLocalLiked(isLiked), [isLiked]);
   useEffect(() => setLocalLikedCount(likedCount), [likedCount]);
 
   // 썸네일 src 안전 변환 (빈 문자열 금지)
   const thumbnailSrc = useMemo(() => {
-    const t = (restaurant as any).thumbnailUrl as
-      | string
-      | URL
-      | undefined
-      | null;
+    const t = restaurant.thumbnailUrl as string | URL | undefined | null;
     if (!t) return undefined;
     return typeof t === "string" ? t : t.toString();
   }, [restaurant]);
@@ -51,7 +48,7 @@ export default function RestaurantCard({
 
   // 숫자 ID로 맞추기
   const restaurantIdNum = useMemo(() => {
-    const raw = (restaurant as any).id;
+    const raw = restaurant.id;
     const n = typeof raw === "number" ? raw : Number(raw);
     return Number.isNaN(n) ? undefined : n;
   }, [restaurant]);
@@ -59,6 +56,7 @@ export default function RestaurantCard({
   const isPopular = localLikedCount >= 3;
 
   const toggleLike = async () => {
+    if (!user) return;
     if (clicking) return;
     if (restaurantIdNum === undefined) return;
 
@@ -175,9 +173,9 @@ export default function RestaurantCard({
 
       {/* 텍스트 */}
       <div className="flex flex-col gap-2">
-        <RestaurantCategoryBadge category={(restaurant as any).category} />
+        <RestaurantCategoryBadge category={restaurant.category} />
         <div className="flex flex-col">
-          <Link to={`/restaurant/${String((restaurant as any).id)}`}>
+          <Link to={`/restaurant/${String(restaurant.id)}`}>
             <h2 className="text-lg font-semibold text-gray-800 hover:text-[#e4573d] hover:underline underline-offset-4 transition-colors duration-200">
               {restaurant.name}
             </h2>
