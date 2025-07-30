@@ -338,7 +338,7 @@ export default function MainPage() {
             </div>
           ) : restaurants && restaurants.length > 0 ? (
             // ✅ 결과 리스트
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {restaurants.map((item, idx) => {
                 return (
                   <>
